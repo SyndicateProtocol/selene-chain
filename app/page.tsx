@@ -1,4 +1,8 @@
 "use client"
+
+import Guide from "@/components/Guide"
+import HowTo from "@/components/HowTo"
+import MoonPhase from "@/components/MoonPhase"
 import dynamic from "next/dynamic"
 
 const ModelViewer = dynamic(() => import("@/components/ModelViewer"), {
@@ -7,11 +11,21 @@ const ModelViewer = dynamic(() => import("@/components/ModelViewer"), {
 
 export default function Home() {
   return (
-    <div>
-      <h1 className="font-decovar font-geist text-6xl">
-        onchain transactions sequenced by lunar phases
-      </h1>
+    <section className="font-geist">
+      <div className="p-4">
+        <h1 className=" text-5xl inline-block max-w-[20ch]">
+          <span className="whitespace-nowrap">
+            <MoonPhase />
+            <span>nchain</span>
+          </span>{" "}
+          transactions sequenced by lunar phases
+        </h1>
+        <div className="flex flex-row gap-4 justify-between">
+          <Guide />
+          <HowTo />
+        </div>
+      </div>
       <ModelViewer />
-    </div>
+    </section>
   )
 }

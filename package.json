@@ -16,6 +16,7 @@
     "postprocessing": "^6.37.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "shiki": "^3.2.2",
     "three": "^0.175.0"
   },
   "devDependencies": {

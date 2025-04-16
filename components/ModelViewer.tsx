@@ -13,7 +13,7 @@ export default function ModelViewer() {
   const { scene } = useGLTF("/moon20.glb")
 
   return (
-    <div className="h-screen w-full">
+    <div className="h-screen w-full fixed top-0 bottom-0 left-0 right-0 z-[-1]">
       <Canvas
         shadows
         camera={{ position: [0, 0, 5], fov: 50 }}
@@ -31,11 +31,13 @@ export default function ModelViewer() {
           intensity={1.5}
           castShadow
         />
-        <pointLight position={[-10, -10, -10]} intensity={1.0} />
-        <pointLight position={[0, 0, 5]} intensity={0.8} />
+        <ambientLight intensity={2.0} /> {/* Increased from 1.2 */}
+        <spotLight position={[10, 10, 10]} intensity={2.5} />{" "}
+        <pointLight position={[-10, -10, -10]} intensity={1.5} />{" "}
+        <pointLight position={[0, 0, 5]} intensity={1.2} />{" "}
         <primitive object={scene} scale={1.5} position={[0, 0, 0]} />
         <OrbitControls
-          enableRotate={true}
+          enableRotate={false}
           enablePan={false}
           enableDamping
           dampingFactor={0.05}
@@ -44,7 +46,7 @@ export default function ModelViewer() {
           maxDistance={15}
           autoRotate
           autoRotateSpeed={0.5}
-          enableZoom={true}
+          enableZoom={false}
           zoomSpeed={1.0}
         />
       </Canvas>

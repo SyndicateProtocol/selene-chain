@@ -19,3 +19,10 @@ html {
   --color-blue: #0005ff;
   --color-gray: #4b4b4b;
 }
+
+.shiki {
+  @apply px-4;
+  @apply overflow-x-scroll;
+  @apply text-sm;
+  @apply font-mono;
+}

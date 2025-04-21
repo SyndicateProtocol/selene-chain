@@ -47,13 +47,12 @@ const tx = await contract.executeHighGasPriorityTransaction({
         <div className="max-w-prose">
           <p className="text-sm leading-none">
             The current lunar phase is{" "}
-            <div className="px-1 py-1 border-[#454545] border rounded text-black inline-block">
+            <div className=" text-black underline inline-block">
               {lunarPhase?.name}
               <span className="font-moonphases pl-1 align-bottom">
                 {lunarPhase?.symbol}
               </span>
             </div>
-            .
             <br /> <br />
           </p>
           <p className="text-sm leading-none">

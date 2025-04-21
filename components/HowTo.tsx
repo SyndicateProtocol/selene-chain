@@ -1,5 +1,4 @@
 "use client"
-
 import { lunarPhases } from "@/lib/constants"
 import { useEffect, useState } from "react"
 import { codeToHtml } from "shiki"
@@ -7,6 +6,7 @@ import { codeToHtml } from "shiki"
 export default function HowTo() {
   const [highlightedCode, setHighlightedCode] = useState<string>("")
   const [isLoading, setIsLoading] = useState<boolean>(true)
+
   const lunarPhase = lunarPhases.find(
     (phase) => phase.name === "Waning Gibbous Moon"
   )
@@ -39,10 +39,28 @@ const tx = await contract.executeHighGasPriorityTransaction({
   }, [])
 
   return (
-    <div className="p-1 bg-[#d5d5d5] my-12 self-baseline">
+    <div className="p-1 bg-[#d5d5d5] my-12 self-baseline max-w-full">
       <div className="">
         <div className="font-medium text-3xl">
           How to interact with the contract?
+        </div>
+        <div className="max-w-prose">
+          <p className="text-sm leading-none">
+            The current lunar phase is{" "}
+            <div className="px-1 py-1 border-[#454545] border rounded text-black inline-block">
+              {lunarPhase?.name}
+              <span className="font-moonphases pl-1 align-bottom">
+                {lunarPhase?.symbol}
+              </span>
+            </div>
+            .
+            <br /> <br />
+          </p>
+          <p className="text-sm leading-none">
+            This phase prioritizes transactions with higher gas limits, making
+            them more likely to be included in the next block. To interact with
+            the contract, you can run the following transaction:
+          </p>
         </div>
         {isLoading ? (
           <code className="block my-2 text-[10px]">{codeSnippet}</code>
@@ -52,15 +70,13 @@ const tx = await contract.executeHighGasPriorityTransaction({
             dangerouslySetInnerHTML={{ __html: highlightedCode }}
           />
         )}
-        <div className="flex flex-row justify-between">
-          <button
-            type="button"
-            className="bg-black px-2 py-1 rounded-md text-sm text-white self-center"
-          >
-            run transaction →
-          </button>
-          <div className="font-moonphases text-3xl">{lunarPhase?.symbol}</div>
-        </div>
+
+        <button
+          type="button"
+          className="bg-black px-2 py-1 rounded-md text-sm text-white self-center"
+        >
+          run transaction →
+        </button>
       </div>
     </div>
   )

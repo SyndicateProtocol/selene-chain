@@ -20,7 +20,7 @@ export default function Home() {
           </span>{" "}
           transactions sequenced by lunar phases
         </h1>
-        <div className="flex flex-row gap-4 justify-between">
+        <div className="flex flex-row gap-4">
           <Guide />
           <HowTo />
         </div>

@@ -48,14 +48,12 @@ export default function Guide() {
   const currentPhase = "Waning Gibbous Moon"
 
   return (
-    <div className="grid gap-3 max-w-96 my-12 font-geist">
+    <div className="grid gap-2 max-w-96 my-12 font-geist">
       {lunarPhases.map((phase) => (
         <div
           key={phase.name}
-          className={`p-1 rounded-lg flex items-center gap-4 backdrop-blur-sm ${
-            phase.name === currentPhase
-              ? " bg-black text-white"
-              : "border border-dashed"
+          className={`px-2 py-2  flex items-center gap-4  bg-gray text-white backdrop-blur-sm ${
+            phase.name === currentPhase ? " !bg-black text-white" : ""
           }`}
         >
           <span className="font-moonphases text-4xl">{phase.symbol}</span>
@@ -64,7 +62,7 @@ export default function Guide() {
             <p className="font-mono text-xs">{phase.priority}</p>
           </div>
           {phase.name === currentPhase && (
-            <span className="bg-white text-black py-1 pl-2 pr-1 rounded-bl-2xl rounded-tl-2xl  ml-auto text-[11px]">
+            <span className="bg-white text-black py-1 px-2 rounded-2xl  ml-auto text-[11px]">
               current
             </span>
           )}

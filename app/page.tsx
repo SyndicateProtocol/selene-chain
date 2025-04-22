@@ -3,6 +3,7 @@
 import Guide from "@/components/Guide"
 import HowTo from "@/components/HowTo"
 import MoonPhase from "@/components/MoonPhase"
+import TxPoller from "@/components/TxPoller"
 import dynamic from "next/dynamic"
 
 const ModelViewer = dynamic(() => import("@/components/ModelViewer"), {
@@ -20,9 +21,10 @@ export default function Home() {
           </span>{" "}
           transactions sequenced by lunar phases
         </h1>
-        <div className="flex flex-col lg:flex-row gap-4 ">
+        <div className="flex flex-col items-start lg:flex-row gap-4 ">
           <Guide />
           <HowTo />
+          <TxPoller />
         </div>
       </div>
       <ModelViewer />

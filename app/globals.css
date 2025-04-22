@@ -18,6 +18,7 @@ html {
   --font-mono: "JetBrains Mono", monospace;
   --color-blue: #0005ff;
   --color-gray: #4b4b4b;
+  --color-transparent-gray: #d5d5d5a3;
 }
 
 .shiki {

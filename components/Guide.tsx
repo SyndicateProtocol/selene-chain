@@ -11,7 +11,7 @@ export default function Guide() {
       {lunarPhases.map((phase) => (
         <div
           key={phase.name}
-          className={`px-2 py-2  flex items-center gap-4  bg-gray text-white backdrop-blur-sm ${
+          className={`px-2 py-2  flex items-center gap-4  rounded bg-gray text-white backdrop-blur-sm ${
             phase.name === currentPhase ? " !bg-black text-white" : ""
           }`}
         >

@@ -2,14 +2,17 @@
 pragma solidity ^0.8.15;
 
 contract Moonphase {
-    // 0 & 29 = new moon
-    // 1-6 = waxing crescent
-    // 7 = first quarter
-    // 8-13 = waxing gibbous
-    // 14-15 = full moon
-    // 16-21 = waning gibbous
-    // 22 = last quarter
-    // 23-28 = waning crescent
+    /// @notice Computes the phase of the moon for a given timestamp
+    /// @param timestamp The timestamp to compute the moon phase for
+    /// @return phase The phase of the moon:
+    /// 0 & 29 = New Moon
+    /// 1-6 = Waxing Crescent
+    /// 7 = First Quarter
+    /// 8-13 = Waxing Gibbous
+    /// 14-15 = Full Moon
+    /// 16-21 = Waning Gibbous
+    /// 22 = Last Quarter
+    /// 23-28 = Waning Crescent
     function moonPhase(uint256 timestamp) public pure returns (uint8 phase) {
         // Known new moon: Jan 6, 2000 at 18:14 UTC
         uint256 synodicMonth = 2551443; // seconds in a synodic month (~29.5306 days)
@@ -23,6 +26,9 @@ contract Moonphase {
         return phaseIndex;
     }
 
+    /// @notice Computes the name of the moon phase for a given phase index
+    /// @param phase The phase index to compute the name for
+    /// @return name The name of the moon phase
     function moonPhaseName(uint8 phase) public pure returns (string memory name) {
         require(phase >= 0 && phase <= 29, "Invalid phase");
         if (phase == 0 || phase == 29) {

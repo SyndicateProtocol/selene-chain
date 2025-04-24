@@ -50,6 +50,6 @@ contract MoonphaseTest is Test {
     }
 
     function assertMoonPhase(uint256 timestamp, string memory expectedPhase) public view {
-        assertEq(moonphase.moonPhaseName(moonphase.moonPhase(timestamp)), expectedPhase);
+        assertEq(moonphase.moonPhase(timestamp), expectedPhase);
     }
 }

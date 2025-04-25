@@ -13,18 +13,39 @@ const ModelViewer = dynamic(() => import("@/components/ModelViewer"), {
 export default function Home() {
   return (
     <section className="font-geist">
-      <div className="p-4">
-        <h1 className=" text-5xl inline-block max-w-[20ch]">
-          <span className="whitespace-nowrap">
-            <MoonPhase />
-            <span>nchain</span>
-          </span>{" "}
-          transactions sequenced by lunar phases
-        </h1>
-        <div className="flex flex-col items-start lg:flex-row gap-4 ">
-          <Guide />
-          <HowTo />
-          <TxPoller />
+      <div className="container mx-auto p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          <div className="md:col-span-2 lg:col-span-2">
+            <h1 className="text-5xl inline-block max-w-[20ch]">
+              <span className="whitespace-nowrap">
+                <MoonPhase />
+                <span>nchain</span>
+              </span>{" "}
+              transactions sequenced by lunar phases
+            </h1>
+          </div>
+          <div className="md:col-span-2 lg:col-span-1 p-4 bg-black/5 backdrop-blur-sm rounded-xl">
+            <p className="text-sm">
+              This site tracks lunar phases and transactions on Selene chain...{" "}
+              <span className="bold font-medium">
+                Where blockchain meets celestial mechanics 🌟
+              </span>{" "}
+              Our sequencer prioritizes transactions based on the current phase
+              of the moon, creating predictable rhythms for different
+              transaction types. See which transactions are being prioritized
+              right now, and time your activities with the cosmic cycle for
+              optimal results.
+            </p>
+          </div>
+          <div className="lg:col-span-1">
+            <Guide />
+          </div>
+          <div className="lg:col-span-1">
+            <HowTo />
+          </div>
+          <div className="lg:col-span-1">
+            <TxPoller />
+          </div>
         </div>
       </div>
       <ModelViewer />

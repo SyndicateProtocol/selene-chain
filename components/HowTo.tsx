@@ -39,7 +39,7 @@ const tx = await contract.executeHighGasPriorityTransaction({
   }, [])
 
   return (
-    <div className="p-1 bg-transparent-gray rounded  my-12 self-baseline max-w-full">
+    <div className="p-1 bg-transparent-gray rounded-xl  my-12 self-baseline max-w-full">
       <div className="">
         <div className="font-medium text-3xl">
           How to interact with the contract?

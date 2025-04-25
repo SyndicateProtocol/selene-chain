@@ -54,7 +54,7 @@ export default function TxPoller() {
   }, [fetchLatestBlock])
 
   return (
-    <section className="max-w-md my-12 basis-full">
+    <section className="w-full my-12 basis-full">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">Latest Transactions</h2>
       </div>
@@ -90,10 +90,10 @@ export default function TxPoller() {
                   <div className="flex items-center gap-2 overflow-hidden">
                     <Hash className="h-4 w-4 flex-shrink-0 text-black/50" />
                     <p
-                      className="text-sm font-mono truncate"
+                      className="text-xs font-mono overflow-hidden text-ellipsis"
                       title={tx.hash as string}
                     >
-                      {(tx.hash as string)?.substring(0, 18)}...
+                      {tx.hash as string}
                     </p>
                   </div>
 

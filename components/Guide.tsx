@@ -3,15 +3,14 @@
 import { lunarPhases } from "@/lib/constants"
 
 export default function Guide() {
-  // TODO: update after call to lunar phase contract
   const currentPhase = "Waning Gibbous Moon"
 
   return (
-    <div className="grid gap-2 max-w-96 my-12 font-geist">
+    <div className="grid gap-2 max-w-96 min-w-72 my-12 font-geist">
       {lunarPhases.map((phase) => (
         <div
           key={phase.name}
-          className={`px-2 py-2  flex items-center gap-4  rounded bg-gray text-white backdrop-blur-sm ${
+          className={`px-2 py-2  flex items-center gap-4  rounded-xl border text-black backdrop-blur-sm ${
             phase.name === currentPhase ? " !bg-black text-white" : ""
           }`}
         >

@@ -25,7 +25,7 @@ export default function HowTo() {
 
   // Map lunar phases to preferred transaction types
   // update when we have it codified
-  const lunarPreferences = {
+  const lunarPreferences: Record<string, string> = {
     "Waning Gibbous Moon": "highGas",
     "Full Moon": "lowCalldata",
     "Waxing Crescent Moon": "nftMint"
@@ -103,7 +103,7 @@ const tx = await contract.executeMinimalTransaction(compressedData, {
     highlightAllCode()
   }, [])
 
-  const renderCodeBlock = (key: string) => {
+  const renderCodeBlock = (key: keyof typeof codeSnippets) => {
     if (isLoading) {
       return <code className="block my-2 text-[10px]">{codeSnippets[key]}</code>
     }

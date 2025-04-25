@@ -17,6 +17,9 @@ library RLPTxBreakdown {
      * @param txData The raw transaction data.
      * @return chainId The chain ID of the transaction
      * @return nonce The nonce of the transaction
+     * @return maxPriorityFeePerGas The max priority fee per gas of the transaction
+     * @return maxFeePerGas The max fee per gas of the transaction
+     * @return gasLimit The gas limit of the transaction
      * @return value The value of the transaction
      * @return data The data of the transaction
      * @return to The recipient address of the transaction
@@ -28,9 +31,9 @@ library RLPTxBreakdown {
         returns (
             uint256 chainId,
             uint256 nonce,
-            // uint256 _maxPriorityFeePerGas,
-            // uint256 _maxFeePerGas,
-            // uint256 _gasLimit,
+            uint256 maxPriorityFeePerGas,
+            uint256 maxFeePerGas,
+            uint256 gasLimit,
             uint256 value,
             bytes memory data,
             address to,
@@ -70,15 +73,15 @@ library RLPTxBreakdown {
         // Use different variable names to avoid shadowing
         uint256 _chainId = items[0].toUint();
         uint256 _nonce = items[1].toUint();
-        // uint256 _maxPriorityFeePerGas = items[2].toUint();
-        // uint256 _maxFeePerGas = items[3].toUint();
-        // uint256 _gasLimit = items[4].toUint();
+        uint256 _maxPriorityFeePerGas = items[2].toUint();
+        uint256 _maxFeePerGas = items[3].toUint();
+        uint256 _gasLimit = items[4].toUint();
         uint256 _value = items[6].toUint();
         bytes memory _data = items[7].toBytes();
         address _to = items[5].toAddress();
         address _from = _getAddress(unsignedPayload, items);
 
-        return (_chainId, _nonce, _value, _data, _to, _from);
+        return (_chainId, _nonce, _maxPriorityFeePerGas, _maxFeePerGas, _gasLimit, _value, _data, _to, _from);
     }
 
     /**

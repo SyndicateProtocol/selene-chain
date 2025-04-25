@@ -12,6 +12,6 @@ contract MoonphaseCalldataPermissionModule is ICalldataPermissionModule {
     }
 
     function isCalldataAllowed(bytes calldata data) external view returns (bool) {
-        return false;
+        return moonphase.isAllowed(data);
     }
 }

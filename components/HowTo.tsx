@@ -12,6 +12,7 @@ export default function HowTo() {
   )
 
   const codeSnippet = `
+  viem viem viem viem!!
 const tx = await contract.executeHighGasPriorityTransaction({
   value: ethers.utils.parseEther("0.1"),  
   gasLimit: 500000,  // High gas limit to prioritize this transaction
@@ -39,7 +40,7 @@ const tx = await contract.executeHighGasPriorityTransaction({
   }, [])
 
   return (
-    <div className="p-1 bg-white/8 backdrop-blur-sm rounded-xl  my-12 self-baseline max-w-full">
+    <div className="p-1 bg-white/40 backdrop-blur-sm rounded-xl  my-12 self-baseline max-w-full">
       <div className="">
         <div className="font-medium text-3xl">
           How to interact with the contract?

@@ -69,24 +69,67 @@ contract Moonphase {
             // Contract deployments
             return to == address(0);
         } else if (phase == keccak256(abi.encodePacked("First Quarter"))) {
-            // @note standard fifo: need something else
-            return true;
+            // Modulo of an angel number
+            return nonce % 111 == 0;
         } else if (phase == keccak256(abi.encodePacked("Waxing Gibbous"))) {
-            // @note batching txs: need something else
+            // TODO
+            // Only call a specific function signature
             return true;
         } else if (phase == keccak256(abi.encodePacked("Full Moon"))) {
             // Interacting with token contracts
-            return true;
+            return isERC20Call(data) || isERC721Call(data);
         } else if (phase == keccak256(abi.encodePacked("Waning Gibbous"))) {
             // High gas limit
-            return gasLimit >= 1000000;
+            return gasLimit >= 2000000;
         } else if (phase == keccak256(abi.encodePacked("Last Quarter"))) {
             // Gas efficient txs between gas limit and calldata ratio
             return gasLimit >= 1000000 && data.length <= 1000;
         } else if (phase == keccak256(abi.encodePacked("Waning Crescent"))) {
-            // @note ^: need something else here?? High value txs
-            return value >= 1000000000000000000;
+            // High value txs (0.1 ETH)
+            return value >= 100000000000000000;
         }
         return false;
     }
+
+    function isERC20Call(bytes memory data) internal pure returns (bool) {
+        bytes4 selector = getFunctionSelector(data);
+        return selectorMatches(selector, "transfer(address,uint256)")
+            || selectorMatches(selector, "approve(spender,uint256)")
+            || selectorMatches(selector, "transferFrom(address,address,uint256)");
+    }
+
+    function isERC721Call(bytes memory data) internal pure returns (bool) {
+        bytes4 selector = getFunctionSelector(data);
+        return selectorMatches(selector, "safeTransferFrom(address,address,uint256)")
+            || selectorMatches(selector, "safeTransferFrom(address,address,uint256,string)")
+            || selectorMatches(selector, "transferFrom(address,address,uint256,bytes)")
+            || selectorMatches(selector, "approve(address,uint256)")
+            || selectorMatches(selector, "setApprovalForAll(address,bool)");
+    }
+
+    function getFunctionSelector(bytes memory data) internal pure returns (bytes4 selector) {
+        require(data.length >= 4, "Data too short");
+        assembly {
+            selector := mload(add(data, 32))
+        }
+        return selector;
+    }
+
+    function selectorMatches(bytes4 selector, string memory targetSelector) internal pure returns (bool) {
+        return selector == bytes4(keccak256(abi.encodePacked(targetSelector)));
+    }
+
+    // IDEAS:
+    // can only call a specific contract (people who bounce messages off the moon), using the moon as a relay
+    // echo-ing messages via a contract event
 }
+
+// Moonphase Rules:
+// 1. New Moon: prioritizes low calldata size
+// 2. Waxing Crescent: prioritizes contract deployments
+// 3. First Quarter: nonce is an angel number
+// 4. Waxing Gibbous: only call a specific function signature
+// 5. Full Moon: txs interacting with token contracts
+// 6. Waning Gibbous: prioritizes high gas limit
+// 7. Last Quarter: gas-efficient txs on gas limit to calldata ratio
+// 8. Waning Crescent: high value txs (0.1 ETH)

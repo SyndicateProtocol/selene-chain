@@ -16,38 +16,30 @@ contract MoonphaseCalldataPermissionModule is ICalldataPermissionModule {
 
         if (phase == keccak256(abi.encodePacked("New Moon"))) {
             // Low calldata
-            // TODO @caleb: how small should this be?
-            // reallyLongNameWithAlotOFparameters(addres,address,address,uint256,uint256)
-            // shortCall(address)
+            // TODO @caleb: finalize calldata length
             return data.length <= 100;
         } else if (phase == keccak256(abi.encodePacked("Waxing Crescent"))) {
-            // Only interact with specific contract that echos a message
-            // TODO: update with address
-            // @note TODO: create tix for kris10
+            // Only interact with specific contract address
+            // TODO @kris10: allow list an address & allow owner to update address
             return to == address(0);
         } else if (phase == keccak256(abi.encodePacked("First Quarter"))) {
-            // TODO: need a different rule here
-            // Modulo of an angel number
-            // @note TODO: mint(address) -> requires an angel number donation, we check the value
+            // TODO @caleb: check value sent is an angel number
             return value == 111;
         } else if (phase == keccak256(abi.encodePacked("Waxing Gibbous"))) {
             // Only call a specific function signature
-            // TODO: finalize function we want to call
+            // TODO @kris10: finalize function signature we want to call
             return selectorMatches(getFunctionSelector(data), "echo(string)");
         } else if (phase == keccak256(abi.encodePacked("Full Moon"))) {
             // Interacting with token contracts
             return isERC20Call(data) || isERC721Call(data) || isERC1155Call(data);
         } else if (phase == keccak256(abi.encodePacked("Waning Gibbous"))) {
             // High gas limit
-            // TODO: in our contract, have once function that has a gas limit of at least 2M, and another that is small
             return gasLimit >= 2000000;
         } else if (phase == keccak256(abi.encodePacked("Last Quarter"))) {
             // Gas efficient txs between gas limit and calldata ratio
-            // TODO: include this in test contract: small interface
             return gasLimit >= 1000000 && data.length <= 1000;
         } else if (phase == keccak256(abi.encodePacked("Waning Crescent"))) {
             // Low value txs (0.1 ETH)
-            // TODO: include this in test contract: small interface (require value > 0.1 ETH)
             return value <= 100000000000000000;
         }
         return false;

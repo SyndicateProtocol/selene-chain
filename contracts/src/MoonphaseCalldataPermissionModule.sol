@@ -12,33 +12,43 @@ contract MoonphaseCalldataPermissionModule is ICalldataPermissionModule {
     /// @return bool indicating if the calldata is allowed
     function isCalldataAllowed(bytes calldata encodedTxData) public view returns (bool) {
         bytes32 phase = keccak256(abi.encodePacked(currentPhase()));
-        (, uint256 nonce,,, uint256 gasLimit, uint256 value, bytes memory data, address to,) =
-            RLPTxBreakdown.decodeTx(encodedTxData);
+        (,,,, uint256 gasLimit, uint256 value, bytes memory data, address to,) = RLPTxBreakdown.decodeTx(encodedTxData);
 
         if (phase == keccak256(abi.encodePacked("New Moon"))) {
             // Low calldata
+            // TODO @caleb: how small should this be?
+            // reallyLongNameWithAlotOFparameters(addres,address,address,uint256,uint256)
+            // shortCall(address)
             return data.length <= 100;
         } else if (phase == keccak256(abi.encodePacked("Waxing Crescent"))) {
-            // Contract deployments
+            // Only interact with specific contract that echos a message
+            // TODO: update with address
+            // @note TODO: create tix for kris10
             return to == address(0);
         } else if (phase == keccak256(abi.encodePacked("First Quarter"))) {
+            // TODO: need a different rule here
             // Modulo of an angel number
-            return nonce % 111 == 0;
+            // @note TODO: mint(address) -> requires an angel number donation, we check the value
+            return value == 111;
         } else if (phase == keccak256(abi.encodePacked("Waxing Gibbous"))) {
             // Only call a specific function signature
+            // TODO: finalize function we want to call
             return selectorMatches(getFunctionSelector(data), "echo(string)");
         } else if (phase == keccak256(abi.encodePacked("Full Moon"))) {
             // Interacting with token contracts
-            return isERC20Call(data) || isERC721Call(data);
+            return isERC20Call(data) || isERC721Call(data) || isERC1155Call(data);
         } else if (phase == keccak256(abi.encodePacked("Waning Gibbous"))) {
             // High gas limit
+            // TODO: in our contract, have once function that has a gas limit of at least 2M, and another that is small
             return gasLimit >= 2000000;
         } else if (phase == keccak256(abi.encodePacked("Last Quarter"))) {
             // Gas efficient txs between gas limit and calldata ratio
+            // TODO: include this in test contract: small interface
             return gasLimit >= 1000000 && data.length <= 1000;
         } else if (phase == keccak256(abi.encodePacked("Waning Crescent"))) {
-            // High value txs (0.1 ETH)
-            return value >= 100000000000000000;
+            // Low value txs (0.1 ETH)
+            // TODO: include this in test contract: small interface (require value > 0.1 ETH)
+            return value <= 100000000000000000;
         }
         return false;
     }
@@ -58,7 +68,6 @@ contract MoonphaseCalldataPermissionModule is ICalldataPermissionModule {
         // Known new moon: Jan 6, 2000 at 18:14 UTC
         uint256 synodicMonth = 2551443; // seconds in a synodic month (~29.5306 days)
         uint256 newMoonReference = 947182440; // reference new moon timestamp
-
         uint256 elapsed = timestamp - newMoonReference;
         uint256 phaseTime = elapsed % synodicMonth;
 
@@ -95,6 +104,16 @@ contract MoonphaseCalldataPermissionModule is ICalldataPermissionModule {
     }
 
     function isERC721Call(bytes memory data) internal pure returns (bool) {
+        bytes4 selector = getFunctionSelector(data);
+        return selectorMatches(selector, "safeTransferFrom(address,address,uint256)")
+            || selectorMatches(selector, "safeTransferFrom(address,address,uint256,string)")
+            || selectorMatches(selector, "transferFrom(address,address,uint256,bytes)")
+            || selectorMatches(selector, "approve(address,uint256)")
+            || selectorMatches(selector, "setApprovalForAll(address,bool)");
+    }
+
+    // TODO: make sure these are right @caleb
+    function isERC1155Call(bytes memory data) internal pure returns (bool) {
         bytes4 selector = getFunctionSelector(data);
         return selectorMatches(selector, "safeTransferFrom(address,address,uint256)")
             || selectorMatches(selector, "safeTransferFrom(address,address,uint256,string)")

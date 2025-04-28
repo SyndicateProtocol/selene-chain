@@ -16,30 +16,35 @@ contract MoonphaseCalldataPermissionModule is ICalldataPermissionModule {
 
         if (phase == keccak256(abi.encodePacked("New Moon"))) {
             // Low calldata
-            // TODO @caleb: finalize calldata length
+            // TODO @caleb [DELTA-7296]: finalize calldata length
             return data.length <= 100;
         } else if (phase == keccak256(abi.encodePacked("Waxing Crescent"))) {
             // Only interact with specific contract address
-            // TODO @kris10: allow list an address & allow owner to update address
+            // TODO @kris10 [DELTA-7291]: allow list an address & allow owner to update address
             return to == address(0);
         } else if (phase == keccak256(abi.encodePacked("First Quarter"))) {
-            // TODO @caleb: check value sent is an angel number
+            // Require an angel number donation
+            // TODO @caleb [DELTA-7292]: check value sent is an angel number
             return value == 111;
         } else if (phase == keccak256(abi.encodePacked("Waxing Gibbous"))) {
             // Only call a specific function signature
-            // TODO @kris10: finalize function signature we want to call
+            // TODO @kris10 [DELTA-7297]: finalize function signature we want to call
             return selectorMatches(getFunctionSelector(data), "echo(string)");
         } else if (phase == keccak256(abi.encodePacked("Full Moon"))) {
             // Interacting with token contracts
+            // TODO @caleb [DELTA-7293]: deploy contracts to be used here
             return isERC20Call(data) || isERC721Call(data) || isERC1155Call(data);
         } else if (phase == keccak256(abi.encodePacked("Waning Gibbous"))) {
             // High gas limit
+            // TODO @caleb [DELTA-7298]: finalize gas limit
             return gasLimit >= 2000000;
         } else if (phase == keccak256(abi.encodePacked("Last Quarter"))) {
             // Gas efficient txs between gas limit and calldata ratio
+            // TODO @caleb [DELTA-7295]: finalize gas limit and calldata length
             return gasLimit >= 1000000 && data.length <= 1000;
         } else if (phase == keccak256(abi.encodePacked("Waning Crescent"))) {
             // Low value txs (0.1 ETH)
+            // TODO @caleb [DELTA-7294]: finalize value
             return value <= 100000000000000000;
         }
         return false;

@@ -13,7 +13,32 @@ contract MoonInteraction {
         angel = Angel721(_angel721Address);
     }
 
-    function mint(address to) public payable {
+    // TODO: @caleb [DELTA-7296]
+    // function newMoon() public {}
+
+    // TODO: @kris10 [DELTA-7291]
+    // function waxingCrescent() public {}
+
+    // TODO: @caleb [DELTA-7292]
+    function firstQuarter(address to) public {
         angel.mint(to);
     }
+
+    // TODO: @kris10 [DELTA-7297]
+    // function waxingGibbous() public {}
+
+    // TODO: @caleb [DELTA-7293]
+    // function fullMoon() public {}
+
+    // TODO: @caleb [DELTA-7298]
+    // function fullMoon() public {}
+
+    // TODO: @caleb [DELTA-7298]
+    // function waningGibbous() public {}
+
+    // TODO: @caleb [DELTA-7294]
+    // function lastQuarter() public {}
+
+    // TODO: @caleb [DELTA-7295]
+    // function waningCrescent() public {}
 }

@@ -70,18 +70,17 @@ library RLPTxBreakdown {
             items[8].toRlpBytes()
         );
 
-        // Use different variable names to avoid shadowing
-        uint256 _chainId = items[0].toUint();
-        uint256 _nonce = items[1].toUint();
-        uint256 _maxPriorityFeePerGas = items[2].toUint();
-        uint256 _maxFeePerGas = items[3].toUint();
-        uint256 _gasLimit = items[4].toUint();
-        uint256 _value = items[6].toUint();
-        bytes memory _data = items[7].toBytes();
-        address _to = items[5].toAddress();
-        address _from = _getAddress(unsignedPayload, items);
-
-        return (_chainId, _nonce, _maxPriorityFeePerGas, _maxFeePerGas, _gasLimit, _value, _data, _to, _from);
+        return (
+            items[0].toUint(),
+            items[1].toUint(),
+            items[2].toUint(),
+            items[3].toUint(),
+            items[4].toUint(),
+            items[6].toUint(),
+            items[7].toBytes(),
+            items[5].toAddress(),
+            _getAddress(unsignedPayload, items)
+        );
     }
 
     /**

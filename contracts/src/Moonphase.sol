@@ -50,17 +50,8 @@ contract Moonphase {
 
     function isAllowed(bytes calldata encodedTxData) public view returns (bool) {
         bytes32 phase = keccak256(abi.encodePacked(currentPhase()));
-        (
-            uint256 chainId,
-            uint256 nonce,
-            uint256 maxPriorityFeePerGas,
-            uint256 maxFeePerGas,
-            uint256 gasLimit,
-            uint256 value,
-            bytes memory data,
-            address to,
-            address from
-        ) = RLPTxBreakdown.decodeTx(encodedTxData);
+        (, uint256 nonce,,, uint256 gasLimit, uint256 value, bytes memory data, address to,) =
+            RLPTxBreakdown.decodeTx(encodedTxData);
 
         if (phase == keccak256(abi.encodePacked("New Moon"))) {
             // Low calldata
@@ -72,9 +63,8 @@ contract Moonphase {
             // Modulo of an angel number
             return nonce % 111 == 0;
         } else if (phase == keccak256(abi.encodePacked("Waxing Gibbous"))) {
-            // TODO
             // Only call a specific function signature
-            return true;
+            return selectorMatches(getFunctionSelector(data), "echo(string)");
         } else if (phase == keccak256(abi.encodePacked("Full Moon"))) {
             // Interacting with token contracts
             return isERC20Call(data) || isERC721Call(data);
@@ -118,18 +108,4 @@ contract Moonphase {
     function selectorMatches(bytes4 selector, string memory targetSelector) internal pure returns (bool) {
         return selector == bytes4(keccak256(abi.encodePacked(targetSelector)));
     }
-
-    // IDEAS:
-    // can only call a specific contract (people who bounce messages off the moon), using the moon as a relay
-    // echo-ing messages via a contract event
 }
-
-// Moonphase Rules:
-// 1. New Moon: prioritizes low calldata size
-// 2. Waxing Crescent: prioritizes contract deployments
-// 3. First Quarter: nonce is an angel number
-// 4. Waxing Gibbous: only call a specific function signature
-// 5. Full Moon: txs interacting with token contracts
-// 6. Waning Gibbous: prioritizes high gas limit
-// 7. Last Quarter: gas-efficient txs on gas limit to calldata ratio
-// 8. Waning Crescent: high value txs (0.1 ETH)

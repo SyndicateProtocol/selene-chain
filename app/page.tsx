@@ -31,7 +31,17 @@ export default function Home() {
                 Where blockchain meets celestial mechanics 🌟
               </span>{" "}
               The lunar sequencer prioritizes transactions based on the current
-              phase of the moon.
+              phase of the moon.{" "}
+              <a
+                href="https://syndicate.io/"
+                target="_blank"
+                className="underline"
+                rel="noreferrer"
+              >
+                Syndicate
+              </a>{" "}
+              enables new dynamics for sequencers onchain, and in this example,
+              the sequencer is controlled by lunar cycles.
             </p>
           </div>
           <div className="lg:col-span-1">

@@ -6,7 +6,7 @@ export default function Guide() {
   const currentPhase = "Waning Gibbous Moon"
 
   return (
-    <div className="grid gap-2 max-w-96 min-w-72 my-12 font-geist">
+    <div className="grid gap-2 max-w-96 min-w-72 font-geist">
       {lunarPhases.map((phase) => (
         <div
           key={phase.name}

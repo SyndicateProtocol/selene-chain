@@ -54,7 +54,7 @@ export default function TxPoller() {
   }, [fetchLatestBlock])
 
   return (
-    <section className="w-full my-12 basis-full">
+    <section className="w-full basis-full">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">Latest Transactions</h2>
       </div>

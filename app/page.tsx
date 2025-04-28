@@ -30,11 +30,8 @@ export default function Home() {
               <span className="bold font-medium">
                 Where blockchain meets celestial mechanics 🌟
               </span>{" "}
-              Our sequencer prioritizes transactions based on the current phase
-              of the moon, creating predictable rhythms for different
-              transaction types. See which transactions are being prioritized
-              right now, and time your activities with the cosmic cycle for
-              optimal results.
+              The lunar sequencer prioritizes transactions based on the current
+              phase of the moon.
             </p>
           </div>
           <div className="lg:col-span-1">

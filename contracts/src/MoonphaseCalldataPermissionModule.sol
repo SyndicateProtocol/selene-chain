@@ -30,25 +30,21 @@ contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule
             return to == allowedContract;
         } else if (phase == keccak256(abi.encodePacked("First Quarter"))) {
             // Require an angel number donation
-            // TODO @caleb [DELTA-7292]: check value sent is an angel number
-            return value == 111;
+            return isAngelNumber(value);
         } else if (phase == keccak256(abi.encodePacked("Waxing Gibbous"))) {
             return selectorMatches(getFunctionSelector(data), "waxingGibbous()");
         } else if (phase == keccak256(abi.encodePacked("Full Moon"))) {
             // Interacting with token contracts
-            // TODO @caleb [DELTA-7293]: deploy contracts to be used here
             return isERC20Call(data) || isERC721Call(data) || isERC1155Call(data);
         } else if (phase == keccak256(abi.encodePacked("Waning Gibbous"))) {
             // High gas limit
-            // TODO @caleb [DELTA-7298]: finalize gas limit
             return gasLimit >= 2000000;
         } else if (phase == keccak256(abi.encodePacked("Last Quarter"))) {
             // Gas efficient txs between gas limit and calldata ratio
             // TODO @caleb [DELTA-7295]: finalize gas limit and calldata length
             return gasLimit >= 1000000 && data.length <= 1000;
         } else if (phase == keccak256(abi.encodePacked("Waning Crescent"))) {
-            // Low value txs (0.1 ETH)
-            // TODO @caleb [DELTA-7294]: finalize value
+            // Low value txs (<= 0.1 ETH)
             return value <= 100000000000000000;
         }
         return false;
@@ -133,5 +129,16 @@ contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule
 
     function selectorMatches(bytes4 selector, string memory targetSelector) internal pure returns (bool) {
         return selector == bytes4(keccak256(abi.encodePacked(targetSelector)));
+    }
+
+    function isAngelNumber(uint256 value) internal pure returns (bool) {
+        uint256 lastDigit = value % 10;
+        while (value > 0) {
+            if (value % 10 != lastDigit) {
+                return false;
+            }
+            value /= 10;
+        }
+        return true;
     }
 }

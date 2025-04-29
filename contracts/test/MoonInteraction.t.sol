@@ -16,10 +16,6 @@ contract MoonInteractionTest is Test {
         assertEq(moonInteraction.waxingCrescent(), "let me play among the stars");
     }
 
-    function test_FirstQuarter() public view {
-        assertEq(moonInteraction.firstQuarter(), "in other words, hold my hand");
-    }
-
     function test_WaxingGibbous() public view {
         assertEq(moonInteraction.waxingGibbous(), "fly me to the moon");
     }

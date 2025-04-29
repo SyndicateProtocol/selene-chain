@@ -15,8 +15,8 @@ contract MoonInteraction {
         angel = Angel721(_angel721Address);
     }
 
-    function waxingCrescent(bytes calldata /* data */ ) public pure returns (bytes memory) {
-        return "Let me play among the stars.";
+    function waxingCrescent() public pure returns (string memory) {
+        return "let me play among the stars";
     }
 
     // TODO: @caleb [DELTA-7296]

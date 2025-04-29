@@ -14,7 +14,7 @@ contract MoonInteraction is Ownable {
     bytes4 private constant WAXING_GIBBOUS_SELECTOR =
         bytes4(keccak256("waxingGibbous()"));
 
-    // The only contract allowed to interact during Waxing Crescent phase
+    // The only contract that can be written to during Waxing Crescent phase
     address public allowedContract;
 
     constructor(
@@ -25,22 +25,23 @@ contract MoonInteraction is Ownable {
         moonPhaseModule = MoonphaseCalldataPermissionModule(_moonPhaseModule);
     }
 
-    // TODO: @caleb [DELTA-7296]
-    // function newMoon() public {}
-
     function setAllowedContract(address _allowedContract) public onlyOwner {
         allowedContract = _allowedContract;
     }
 
-    function waxingCrescent() public view returns (string memory) {
-        if (isWaxingCrescent()) {
-            require(
-                msg.sender == allowedContract,
-                "Only allowed contract can call"
-            );
-        }
-        return "Let me play among the stars";
+    // Allow external interactions with the allowed contract
+    function waxingCrescent(bytes calldata data) public returns (bytes memory) {
+        require(isWaxingCrescent(), "Not in Waxing Crescent phase");
+
+        // Only allow calls to the specified contract
+        (bool success, bytes memory result) = allowedContract.call(data);
+        require(success, "Call to allowed contract failed");
+
+        return result;
     }
+
+    // TODO: @caleb [DELTA-7296]
+    // function newMoon() public {}
 
     // TODO: @caleb [DELTA-7292]
     function firstQuarter(address to) public onlyAllowedDuringPhase {
@@ -88,8 +89,8 @@ contract MoonInteraction is Ownable {
             );
         } else if (isWaxingCrescent()) {
             require(
-                msg.sender == allowedContract,
-                "Only allowed contract can call during Waxing Crescent"
+                address(this) == allowedContract,
+                "Only allowed contract can be called during Waxing Crescent"
             );
         }
         _;
@@ -103,8 +104,8 @@ contract MoonInteraction is Ownable {
             );
         } else if (isWaxingCrescent()) {
             require(
-                msg.sender == allowedContract,
-                "Only allowed contract can call during Waxing Crescent"
+                address(this) == allowedContract,
+                "Only allowed contract can be called during Waxing Crescent"
             );
         }
         revert("Function not found");

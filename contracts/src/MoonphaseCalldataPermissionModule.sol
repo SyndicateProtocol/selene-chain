@@ -33,9 +33,7 @@ contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule
             // TODO @caleb [DELTA-7292]: check value sent is an angel number
             return value == 111;
         } else if (phase == keccak256(abi.encodePacked("Waxing Gibbous"))) {
-            // Only call a specific function signature
-            // TODO @kris10 [DELTA-7297]: finalize function signature we want to call
-            return selectorMatches(getFunctionSelector(data), "echo(string)");
+            return selectorMatches(getFunctionSelector(data), "waxingGibbous()");
         } else if (phase == keccak256(abi.encodePacked("Full Moon"))) {
             // Interacting with token contracts
             // TODO @caleb [DELTA-7293]: deploy contracts to be used here

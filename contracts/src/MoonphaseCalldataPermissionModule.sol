@@ -3,10 +3,18 @@ pragma solidity ^0.8.15;
 
 import {RLPTxBreakdown} from "./RLP/RLPTxBreakdown.sol";
 import {ICalldataPermissionModule} from "./interfaces/ICalldataPermissionModule.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MoonphaseCalldataPermissionModule is ICalldataPermissionModule {
+contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule {
+    address public allowedContract;
+
+    constructor() Ownable(msg.sender) {}
+
+    function setAllowedContract(address _allowedContract) public onlyOwner {
+        allowedContract = _allowedContract;
+    }
+
     /// @inheritdoc ICalldataPermissionModule
-
     /// @notice Checks if the calldata is allowed based on the current moon phase
     /// @param encodedTxData The encoded transaction data
     /// @return bool indicating if the calldata is allowed
@@ -19,9 +27,7 @@ contract MoonphaseCalldataPermissionModule is ICalldataPermissionModule {
             // TODO @caleb [DELTA-7296]: finalize calldata length
             return data.length <= 100;
         } else if (phase == keccak256(abi.encodePacked("Waxing Crescent"))) {
-            // Only interact with specific contract address
-            // TODO @kris10 [DELTA-7291]: allow list an address & allow owner to update address
-            return to == address(0);
+            return to == allowedContract;
         } else if (phase == keccak256(abi.encodePacked("First Quarter"))) {
             // Require an angel number donation
             // TODO @caleb [DELTA-7292]: check value sent is an angel number

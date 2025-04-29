@@ -6,17 +6,23 @@ import {MoonInteraction} from "../src/MoonInteraction.sol";
 
 contract MoonInteractionTest is Test {
     MoonInteraction public moonInteraction;
+    address mockAngel721Address = address(0x1);
 
     function setUp() public {
-        // Initialize MoonInteraction
-        moonInteraction = new MoonInteraction();
+        moonInteraction = new MoonInteraction(mockAngel721Address);
     }
 
-    function test_WaxingCrescent() public view {
-        assertEq(moonInteraction.waxingCrescent(), "let me play among the stars");
+    function test_WaxingCrescent() public {
+        vm.expectEmit(true, true, true, true);
+        emit MoonInteraction.WaxingCrescent("let me play among the stars");
+        string memory message = moonInteraction.waxingCrescent();
+        assertEq(message, "let me play among the stars");
     }
 
-    function test_WaxingGibbous() public view {
-        assertEq(moonInteraction.waxingGibbous(), "fly me to the moon");
+    function test_WaxingGibbous() public {
+        vm.expectEmit(true, true, true, true);
+        emit MoonInteraction.WaxingGibbous("fly me to the moon");
+        string memory message = moonInteraction.waxingGibbous();
+        assertEq(message, "fly me to the moon");
     }
 }

@@ -6,45 +6,24 @@ import {ICalldataPermissionModule} from "./interfaces/ICalldataPermissionModule.
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {Angel721} from "./Angel721.sol";
 import {MoonphaseCalldataPermissionModule} from "./MoonphaseCalldataPermissionModule.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MoonInteraction is Ownable {
+// don't need reference to moonphase module
+contract MoonInteraction {
     Angel721 public angel;
-    MoonphaseCalldataPermissionModule public moonPhaseModule;
-    bytes4 private constant WAXING_GIBBOUS_SELECTOR =
-        bytes4(keccak256("waxingGibbous()"));
 
-    // The only contract that can be written to during Waxing Crescent phase
-    address public allowedContract;
-
-    constructor(
-        address _angel721Address,
-        address _moonPhaseModule
-    ) Ownable(msg.sender) {
+    constructor(address _angel721Address) {
         angel = Angel721(_angel721Address);
-        moonPhaseModule = MoonphaseCalldataPermissionModule(_moonPhaseModule);
     }
 
-    function setAllowedContract(address _allowedContract) public onlyOwner {
-        allowedContract = _allowedContract;
-    }
-
-    // Allow external interactions with the allowed contract
-    function waxingCrescent(bytes calldata data) public returns (bytes memory) {
-        require(isWaxingCrescent(), "Not in Waxing Crescent phase");
-
-        // Only allow calls to the specified contract
-        (bool success, bytes memory result) = allowedContract.call(data);
-        require(success, "Call to allowed contract failed");
-
-        return result;
+    function waxingCrescent(bytes calldata /* data */ ) public pure returns (bytes memory) {
+        return "Let me play among the stars.";
     }
 
     // TODO: @caleb [DELTA-7296]
     // function newMoon() public {}
 
     // TODO: @caleb [DELTA-7292]
-    function firstQuarter(address to) public onlyAllowedDuringPhase {
+    function firstQuarter(address to) public {
         angel.mint(to);
     }
 
@@ -66,48 +45,4 @@ contract MoonInteraction is Ownable {
 
     // TODO: @caleb [DELTA-7295]
     // function waningCrescent() public {}
-
-    function isWaxingGibbous() internal view returns (bool) {
-        string memory phase = moonPhaseModule.currentPhase();
-        return
-            keccak256(abi.encodePacked(phase)) ==
-            keccak256(abi.encodePacked("Waxing Gibbous"));
-    }
-
-    function isWaxingCrescent() internal view returns (bool) {
-        string memory phase = moonPhaseModule.currentPhase();
-        return
-            keccak256(abi.encodePacked(phase)) ==
-            keccak256(abi.encodePacked("Waxing Crescent"));
-    }
-
-    modifier onlyAllowedDuringPhase() {
-        if (isWaxingGibbous()) {
-            require(
-                msg.sig == WAXING_GIBBOUS_SELECTOR,
-                "Only waxingGibbous can be called during Waxing Gibbous"
-            );
-        } else if (isWaxingCrescent()) {
-            require(
-                address(this) == allowedContract,
-                "Only allowed contract can be called during Waxing Crescent"
-            );
-        }
-        _;
-    }
-
-    fallback() external {
-        if (isWaxingGibbous()) {
-            require(
-                msg.sig == WAXING_GIBBOUS_SELECTOR,
-                "Only waxingGibbous can be called during Waxing Gibbous"
-            );
-        } else if (isWaxingCrescent()) {
-            require(
-                address(this) == allowedContract,
-                "Only allowed contract can be called during Waxing Crescent"
-            );
-        }
-        revert("Function not found");
-    }
 }

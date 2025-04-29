@@ -5,9 +5,7 @@ import {RLPTxBreakdown} from "./RLP/RLPTxBreakdown.sol";
 import {ICalldataPermissionModule} from "./interfaces/ICalldataPermissionModule.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {Angel721} from "./Angel721.sol";
-import {MoonphaseCalldataPermissionModule} from "./MoonphaseCalldataPermissionModule.sol";
 
-// don't need reference to moonphase module
 contract MoonInteraction {
     Angel721 public angel;
 

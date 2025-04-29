@@ -2,17 +2,17 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {MoonphaseCalldataPermissionModule} from "../src/MoonphaseCalldataPermissionModule.sol";
+import {MoonphasePermissionModule} from "../src/MoonphasePermissionModule.sol";
 
-contract MoonphaseCalldataPermissionModuleScript is Script {
-    MoonphaseCalldataPermissionModule public moonphaseCalldataPermissionModule;
+contract MoonphasePermissionModuleScript is Script {
+    MoonphasePermissionModule public moonphasePermissionModule;
 
     function setUp() public {}
 
     function run() public {
         vm.startBroadcast();
 
-        moonphaseCalldataPermissionModule = new MoonphaseCalldataPermissionModule();
+        moonphasePermissionModule = new MoonphasePermissionModule();
 
         vm.stopBroadcast();
     }

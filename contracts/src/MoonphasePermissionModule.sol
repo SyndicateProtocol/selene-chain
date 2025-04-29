@@ -2,10 +2,10 @@
 pragma solidity ^0.8.15;
 
 import {RLPTxBreakdown} from "./RLP/RLPTxBreakdown.sol";
-import {ICalldataPermissionModule} from "./interfaces/ICalldataPermissionModule.sol";
+import {IPermissionModule} from "./interfaces/IPermissionModule.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule {
+contract MoonphasePermissionModule is Ownable, IPermissionModule {
     address public allowedContract;
 
     constructor() Ownable(msg.sender) {}
@@ -14,11 +14,11 @@ contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule
         allowedContract = _allowedContract;
     }
 
-    /// @inheritdoc ICalldataPermissionModule
+    /// @inheritdoc IPermissionModule
     /// @notice Checks if the calldata is allowed based on the current moon phase
     /// @param encodedTxData The encoded transaction data
     /// @return bool indicating if the calldata is allowed
-    function isCalldataAllowed(bytes calldata encodedTxData) public view returns (bool) {
+    function isAllowed(address, address, bytes calldata encodedTxData) public view returns (bool) {
         bytes32 phase = keccak256(abi.encodePacked(currentPhase()));
         (,,,, uint256 gasLimit, uint256 value, bytes memory data, address to,) = RLPTxBreakdown.decodeTx(encodedTxData);
 

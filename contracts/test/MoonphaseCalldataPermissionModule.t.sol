@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import {MoonphaseCalldataPermissionModule} from "../src/MoonphaseCalldataPermissionModule.sol";
+import {MoonphasePermissionModule} from "../src/MoonphasePermissionModule.sol";
 
 contract MoonphaseTest is Test {
-    MoonphaseCalldataPermissionModule public moonphase;
+    MoonphasePermissionModule public moonphase;
 
     function setUp() public {
-        moonphase = new MoonphaseCalldataPermissionModule();
+        moonphase = new MoonphasePermissionModule();
     }
 
     function test_MoonPhase() public view {

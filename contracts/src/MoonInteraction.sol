@@ -8,12 +8,17 @@ import {Angel721} from "./token/Angel721.sol";
 contract MoonInteraction {
     Angel721 public angel;
 
+    event WaxingCrescent(string);
+    event WaxingGibbous(string);
+
     constructor(address _angel721Address) {
         angel = Angel721(_angel721Address);
     }
 
-    function waxingCrescent() public pure returns (string memory) {
-        return "let me play among the stars";
+    function waxingCrescent() public returns (string memory) {
+        string memory message = "let me play among the stars";
+        emit WaxingCrescent(message);
+        return message;
     }
 
     // TODO: @caleb [DELTA-7296]
@@ -24,8 +29,10 @@ contract MoonInteraction {
         angel.mint(to);
     }
 
-    function waxingGibbous() public pure returns (string memory) {
-        return "fly me to the moon";
+    function waxingGibbous() public returns (string memory) {
+        string memory message = "fly me to the moon";
+        emit WaxingGibbous(message);
+        return message;
     }
 
     // TODO: @caleb [DELTA-7293]

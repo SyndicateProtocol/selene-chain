@@ -4,6 +4,7 @@ pragma solidity ^0.8.15;
 import {RLPTxBreakdown} from "./RLP/RLPTxBreakdown.sol";
 import {IPermissionModule} from "./interfaces/IPermissionModule.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {console} from "forge-std/console.sol";
 
 contract MoonphasePermissionModule is Ownable, IPermissionModule {
     address public allowedContract;
@@ -24,7 +25,6 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
 
         if (phase == keccak256(abi.encodePacked("New Moon"))) {
             // Low calldata
-            // TODO @caleb [DELTA-7296]: finalize calldata length
             return data.length <= 100;
         } else if (phase == keccak256(abi.encodePacked("Waxing Crescent"))) {
             return to == allowedContract;

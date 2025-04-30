@@ -2,53 +2,64 @@
 pragma solidity ^0.8.15;
 
 import {RLPTxBreakdown} from "./RLP/RLPTxBreakdown.sol";
-import {ICalldataPermissionModule} from "./interfaces/ICalldataPermissionModule.sol";
+import {IPermissionModule} from "./interfaces/IPermissionModule.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule {
+contract MoonphasePermissionModule is Ownable, IPermissionModule {
     address public allowedContract;
+    uint256 public gasLimitToDataLengthRatio = 16;
 
-    constructor() Ownable(msg.sender) {}
+    /// @notice Constructor
+    /// @param _allowedContract The address of the allowed contract
+    /// @param _owner The owner of the contract
+    constructor(address _allowedContract, address _owner) Ownable(_owner) {
+        allowedContract = _allowedContract;
+    }
 
+    /// @notice Sets the allowed contract
+    /// @param _allowedContract The address of the allowed contract
     function setAllowedContract(address _allowedContract) public onlyOwner {
         allowedContract = _allowedContract;
     }
 
-    /// @inheritdoc ICalldataPermissionModule
+    /// @notice Sets the gas limit to data length ratio
+    /// @param _gasLimitToDataLengthRatio The ratio of gas limit to data length
+    function setGasLimitToDataLengthRatio(uint256 _gasLimitToDataLengthRatio) public onlyOwner {
+        gasLimitToDataLengthRatio = _gasLimitToDataLengthRatio;
+    }
+
+    /// @inheritdoc IPermissionModule
     /// @notice Checks if the calldata is allowed based on the current moon phase
     /// @param encodedTxData The encoded transaction data
     /// @return bool indicating if the calldata is allowed
-    function isCalldataAllowed(bytes calldata encodedTxData) public view returns (bool) {
+    function isAllowed(address, address, bytes calldata encodedTxData) public view returns (bool) {
         bytes32 phase = keccak256(abi.encodePacked(currentPhase()));
         (,,,, uint256 gasLimit, uint256 value, bytes memory data, address to,) = RLPTxBreakdown.decodeTx(encodedTxData);
 
         if (phase == keccak256(abi.encodePacked("New Moon"))) {
             // Low calldata
-            // TODO @caleb [DELTA-7296]: finalize calldata length
             return data.length <= 100;
         } else if (phase == keccak256(abi.encodePacked("Waxing Crescent"))) {
             return to == allowedContract;
         } else if (phase == keccak256(abi.encodePacked("First Quarter"))) {
             // Require an angel number donation
-            // TODO @caleb [DELTA-7292]: check value sent is an angel number
-            return value == 111;
+            return isAngelNumber(value);
         } else if (phase == keccak256(abi.encodePacked("Waxing Gibbous"))) {
             return selectorMatches(getFunctionSelector(data), "waxingGibbous()");
         } else if (phase == keccak256(abi.encodePacked("Full Moon"))) {
             // Interacting with token contracts
-            // TODO @caleb [DELTA-7293]: deploy contracts to be used here
             return isERC20Call(data) || isERC721Call(data) || isERC1155Call(data);
         } else if (phase == keccak256(abi.encodePacked("Waning Gibbous"))) {
             // High gas limit
-            // TODO @caleb [DELTA-7298]: finalize gas limit
             return gasLimit >= 2000000;
         } else if (phase == keccak256(abi.encodePacked("Last Quarter"))) {
-            // Gas efficient txs between gas limit and calldata ratio
-            // TODO @caleb [DELTA-7295]: finalize gas limit and calldata length
-            return gasLimit >= 1000000 && data.length <= 1000;
+            // Ratio of gas limit to calldata length
+            if (data.length == 0) {
+                return true;
+            }
+            return gasLimit / data.length >= gasLimitToDataLengthRatio;
         } else if (phase == keccak256(abi.encodePacked("Waning Crescent"))) {
-            // Low value txs (0.1 ETH)
-            // TODO @caleb [DELTA-7294]: finalize value
+            // Low value txs (<= 0.1 ETH)
             return value <= 100000000000000000;
         }
         return false;
@@ -97,13 +108,19 @@ contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule
         return moonPhase(block.timestamp);
     }
 
+    /// @notice Checks if the calldata is an ERC20 call
+    /// @param data The encoded transaction data
+    /// @return bool indicating if the calldata is an ERC20 call
     function isERC20Call(bytes memory data) internal pure returns (bool) {
         bytes4 selector = getFunctionSelector(data);
         return selectorMatches(selector, "transfer(address,uint256)")
-            || selectorMatches(selector, "approve(spender,uint256)")
+            || selectorMatches(selector, "approve(address,uint256)")
             || selectorMatches(selector, "transferFrom(address,address,uint256)");
     }
 
+    /// @notice Checks if the calldata is an ERC721 call
+    /// @param data The encoded transaction data
+    /// @return bool indicating if the calldata is an ERC721 call
     function isERC721Call(bytes memory data) internal pure returns (bool) {
         bytes4 selector = getFunctionSelector(data);
         return selectorMatches(selector, "safeTransferFrom(address,address,uint256)")
@@ -113,7 +130,9 @@ contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule
             || selectorMatches(selector, "setApprovalForAll(address,bool)");
     }
 
-    // TODO: make sure these are right @caleb
+    /// @notice Checks if the calldata is an ERC1155 call
+    /// @param data The encoded transaction data
+    /// @return bool indicating if the calldata is an ERC1155 call
     function isERC1155Call(bytes memory data) internal pure returns (bool) {
         bytes4 selector = getFunctionSelector(data);
         return selectorMatches(selector, "safeTransferFrom(address,address,uint256)")
@@ -123,6 +142,9 @@ contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule
             || selectorMatches(selector, "setApprovalForAll(address,bool)");
     }
 
+    /// @notice Gets the function selector from the calldata
+    /// @param data The encoded transaction data
+    /// @return selector The function selector
     function getFunctionSelector(bytes memory data) internal pure returns (bytes4 selector) {
         require(data.length >= 4, "Data too short");
         assembly {
@@ -131,7 +153,42 @@ contract MoonphaseCalldataPermissionModule is Ownable, ICalldataPermissionModule
         return selector;
     }
 
+    /// @notice Checks if the function selector matches the target selector
+    /// @param selector The function selector
+    /// @param targetSelector The target selector
+    /// @return bool indicating if the function selector matches the target selector
     function selectorMatches(bytes4 selector, string memory targetSelector) internal pure returns (bool) {
         return selector == bytes4(keccak256(abi.encodePacked(targetSelector)));
+    }
+
+    /// @notice Checks if the value is an angel number
+    /// @param value The value to check
+    /// @return bool indicating if the value is an angel number
+    function isAngelNumber(uint256 value) internal pure returns (bool) {
+        if (value == 0) return false;
+
+        uint256 digit = 10;
+        uint256 digitCount = 0;
+
+        while (value > 0) {
+            uint256 d = value % 10;
+
+            if (d == 0) {
+                // Allow trailing zeros
+                value /= 10;
+                continue;
+            }
+
+            if (digit == 10) {
+                digit = d; // First non-zero digit
+            } else if (d != digit) {
+                return false; // More than one non-zero digit
+            }
+
+            digitCount++;
+            value /= 10;
+        }
+
+        return digitCount >= 3;
     }
 }

@@ -2,17 +2,21 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {MoonphaseCalldataPermissionModule} from "../src/MoonphaseCalldataPermissionModule.sol";
+import {MoonphasePermissionModule} from "../src/MoonphasePermissionModule.sol";
 
-contract MoonphaseCalldataPermissionModuleScript is Script {
-    MoonphaseCalldataPermissionModule public moonphaseCalldataPermissionModule;
+contract MoonphasePermissionModuleScript is Script {
+    // @note TODO: Replace with actual addresses
+    address internal allowedContract = address(0x1);
+    address internal owner = address(0x2);
+
+    MoonphasePermissionModule internal moonphasePermissionModule;
 
     function setUp() public {}
 
     function run() public {
         vm.startBroadcast();
 
-        moonphaseCalldataPermissionModule = new MoonphaseCalldataPermissionModule();
+        moonphasePermissionModule = new MoonphasePermissionModule(allowedContract, owner);
 
         vm.stopBroadcast();
     }

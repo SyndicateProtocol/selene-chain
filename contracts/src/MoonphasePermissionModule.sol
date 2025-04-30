@@ -47,9 +47,6 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
             // High gas limit
             return gasLimit >= 2000000;
         } else if (phase == keccak256(abi.encodePacked("Last Quarter"))) {
-            console.log("gasLimit", gasLimit);
-            console.log("data.length", data.length);
-            console.log(gasLimit / data.length);
             // Ratio of gas limit to calldata length
             if (data.length == 0) {
                 return true;

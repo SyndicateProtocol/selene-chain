@@ -24,7 +24,7 @@ export default function Home() {
               transactions sequenced by lunar phases
             </h1>
           </div>
-          <div className="md:col-span-2 lg:col-span-1 p-4 bg-black/5 backdrop-blur-sm rounded-xl">
+          <div className="md:col-span-2 lg:col-span-1 p-4 bg-white/40 backdrop-blur-sm rounded-xl">
             <p className="text-sm">
               This site tracks lunar phases and transactions on Selene chain...{" "}
               <span className="bold font-medium">

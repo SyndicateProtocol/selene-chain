@@ -18,11 +18,6 @@ contract MoonInteraction {
     event LastQuarter(string, address indexed);
     event WaningCrescent(address indexed, uint256 indexed);
 
-    struct LastQuarterParams {
-        string message;
-        address recipient;
-    }
-
     constructor(address _angel721Address) {
         angel = Angel721(_angel721Address);
     }
@@ -48,11 +43,7 @@ contract MoonInteraction {
         return message;
     }
 
-    // FULL moon requires the function signture to mock a token
-    // function fullMoon() public {}
-
     function waningGibbous() public {
-        // Emit event
         emit WaningGibbous("U+1F316"); // 🌖
 
         // Consume gas by doing expensive operations
@@ -66,10 +57,9 @@ contract MoonInteraction {
         }
     }
 
-    function lastQuarter(LastQuarterParams[] memory params) public {
-        console.log("params.length", params.length);
-        for (uint256 i = 0; i < params.length; i++) {
-            emit LastQuarter(params[i].message, params[i].recipient);
+    function lastQuarter(string[] memory messages, address[] memory recipients) public {
+        for (uint256 i = 0; i < messages.length; i++) {
+            emit LastQuarter(messages[i], recipients[i]);
         }
     }
 

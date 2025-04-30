@@ -45,10 +45,11 @@ contract MoonInteractionTest is Test {
         uint256 gasStart = gasleft();
         vm.expectEmit(true, true, true, true);
         emit MoonInteraction.LastQuarter("hello", 0x2F5Eb112a1611d889220BCB2Bbbda761D9bbc4f4);
-        MoonInteraction.LastQuarterParams[] memory params = new MoonInteraction.LastQuarterParams[](1);
-        params[0] =
-            MoonInteraction.LastQuarterParams({message: "hello", recipient: 0x2F5Eb112a1611d889220BCB2Bbbda761D9bbc4f4});
-        moonInteraction.lastQuarter(params);
+        address[] memory recipients = new address[](1);
+        recipients[0] = 0x2F5Eb112a1611d889220BCB2Bbbda761D9bbc4f4;
+        string[] memory messages = new string[](1);
+        messages[0] = "hello";
+        moonInteraction.lastQuarter(messages, recipients);
         uint256 gasUsed = gasStart - gasleft();
         console.log("gasUsed", gasUsed);
     }

@@ -98,7 +98,7 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
     function isERC20Call(bytes memory data) internal pure returns (bool) {
         bytes4 selector = getFunctionSelector(data);
         return selectorMatches(selector, "transfer(address,uint256)")
-            || selectorMatches(selector, "approve(spender,uint256)")
+            || selectorMatches(selector, "approve(address,uint256)")
             || selectorMatches(selector, "transferFrom(address,address,uint256)");
     }
 

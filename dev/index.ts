@@ -1,4 +1,4 @@
-import { encodeFunctionData, parseAbi, parseEther, parseGwei } from "viem"
+import { encodeFunctionData, parseAbi, parseGwei } from "viem"
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts"
 export async function dev() {
   const account = privateKeyToAccount(generatePrivateKey())
@@ -8,15 +8,14 @@ export async function dev() {
     to,
     chainId: 1,
     data: encodeFunctionData({
-      abi: parseAbi(["function waxingGibbous()"]),
-      functionName: "waxingGibbous"
-      // args: ["0x1234567890123456789012345678901234567890"]
+      abi: parseAbi(["function somethingElse(address,bool)"]),
+      functionName: "somethingElse",
+      args: ["0x1234567890123456789012345678901234567890", true]
     }),
     maxFeePerGas: parseGwei("20"),
     maxPriorityFeePerGas: parseGwei("1"),
     nonce: 0,
-    type: "eip1559",
-    value: parseEther("0.000000000000111")
+    type: "eip1559"
   })
   console.log(signature)
 }

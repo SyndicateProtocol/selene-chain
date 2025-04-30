@@ -4,15 +4,31 @@ pragma solidity ^0.8.15;
 import {RLPTxBreakdown} from "./RLP/RLPTxBreakdown.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {Angel721} from "./token/Angel721.sol";
+import {console} from "forge-std/console.sol";
 
 contract MoonInteraction {
     Angel721 public angel;
 
+    event NewMoon(string);
     event WaxingCrescent(string);
+    event FirstQuarter(address indexed);
     event WaxingGibbous(string);
+    event FullMoon(address indexed);
+    event WaningGibbous(string);
+    event LastQuarter(string, address indexed);
+    event WaningCrescent(address indexed, uint256 indexed);
+
+    struct LastQuarterParams {
+        string message;
+        address recipient;
+    }
 
     constructor(address _angel721Address) {
         angel = Angel721(_angel721Address);
+    }
+
+    function newMoon(string memory message) public {
+        emit NewMoon(message);
     }
 
     function waxingCrescent() public returns (string memory) {
@@ -21,13 +37,9 @@ contract MoonInteraction {
         return message;
     }
 
-    // TODO: @caleb [DELTA-7296]
-    // function newMoon() public {}
-
-    // TODO: @caleb [DELTA-7292]
-    // UI: address input + number input for donation: (non-angel number donation = failed, angel number donation = succes)
     function firstQuarter(address to) public {
-        angel.mint(to);
+        angel.mint(to, 0);
+        emit FirstQuarter(to);
     }
 
     function waxingGibbous() public returns (string memory) {
@@ -36,18 +48,32 @@ contract MoonInteraction {
         return message;
     }
 
-    // TODO: @caleb [DELTA-7293]
+    // FULL moon requires the function signture to mock a token
     // function fullMoon() public {}
 
-    // TODO: @caleb [DELTA-7298]
-    // function fullMoon() public {}
+    function waningGibbous() public {
+        // Emit event
+        emit WaningGibbous("U+1F316"); // 🌖
 
-    // TODO: @caleb [DELTA-7298]
-    // function waningGibbous() public {}
+        // Consume gas by doing expensive operations
+        uint256 n = 100; // Carefully chosen to use ~2M gas
+        for (uint256 i = 0; i < n; i++) {
+            // Storage writes are expensive (~20k gas each)
+            bytes32 slot = keccak256(abi.encodePacked(i));
+            assembly {
+                sstore(slot, 1)
+            }
+        }
+    }
 
-    // TODO: @caleb [DELTA-7294]
-    // function lastQuarter() public {}
+    function lastQuarter(LastQuarterParams[] memory params) public {
+        console.log("params.length", params.length);
+        for (uint256 i = 0; i < params.length; i++) {
+            emit LastQuarter(params[i].message, params[i].recipient);
+        }
+    }
 
-    // TODO: @caleb [DELTA-7295]
-    // function waningCrescent() public {}
+    function waningCrescent() public payable {
+        emit WaningCrescent(msg.sender, msg.value);
+    }
 }

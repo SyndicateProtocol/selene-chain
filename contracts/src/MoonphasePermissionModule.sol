@@ -14,10 +14,14 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
         allowedContract = _allowedContract;
     }
 
+    /// @notice Sets the allowed contract
+    /// @param _allowedContract The address of the allowed contract
     function setAllowedContract(address _allowedContract) public onlyOwner {
         allowedContract = _allowedContract;
     }
 
+    /// @notice Sets the gas limit to data length ratio
+    /// @param _gasLimitToDataLengthRatio The ratio of gas limit to data length
     function setGasLimitToDataLengthRatio(uint256 _gasLimitToDataLengthRatio) public onlyOwner {
         gasLimitToDataLengthRatio = _gasLimitToDataLengthRatio;
     }
@@ -102,6 +106,9 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
         return moonPhase(block.timestamp);
     }
 
+    /// @notice Checks if the calldata is an ERC20 call
+    /// @param data The encoded transaction data
+    /// @return bool indicating if the calldata is an ERC20 call
     function isERC20Call(bytes memory data) internal pure returns (bool) {
         bytes4 selector = getFunctionSelector(data);
         return selectorMatches(selector, "transfer(address,uint256)")
@@ -109,6 +116,9 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
             || selectorMatches(selector, "transferFrom(address,address,uint256)");
     }
 
+    /// @notice Checks if the calldata is an ERC721 call
+    /// @param data The encoded transaction data
+    /// @return bool indicating if the calldata is an ERC721 call
     function isERC721Call(bytes memory data) internal pure returns (bool) {
         bytes4 selector = getFunctionSelector(data);
         return selectorMatches(selector, "safeTransferFrom(address,address,uint256)")
@@ -118,7 +128,9 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
             || selectorMatches(selector, "setApprovalForAll(address,bool)");
     }
 
-    // TODO: make sure these are right @caleb
+    /// @notice Checks if the calldata is an ERC1155 call
+    /// @param data The encoded transaction data
+    /// @return bool indicating if the calldata is an ERC1155 call
     function isERC1155Call(bytes memory data) internal pure returns (bool) {
         bytes4 selector = getFunctionSelector(data);
         return selectorMatches(selector, "safeTransferFrom(address,address,uint256)")
@@ -128,6 +140,9 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
             || selectorMatches(selector, "setApprovalForAll(address,bool)");
     }
 
+    /// @notice Gets the function selector from the calldata
+    /// @param data The encoded transaction data
+    /// @return selector The function selector
     function getFunctionSelector(bytes memory data) internal pure returns (bytes4 selector) {
         require(data.length >= 4, "Data too short");
         assembly {
@@ -136,10 +151,17 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
         return selector;
     }
 
+    /// @notice Checks if the function selector matches the target selector
+    /// @param selector The function selector
+    /// @param targetSelector The target selector
+    /// @return bool indicating if the function selector matches the target selector
     function selectorMatches(bytes4 selector, string memory targetSelector) internal pure returns (bool) {
         return selector == bytes4(keccak256(abi.encodePacked(targetSelector)));
     }
 
+    /// @notice Checks if the value is an angel number
+    /// @param value The value to check
+    /// @return bool indicating if the value is an angel number
     function isAngelNumber(uint256 value) internal pure returns (bool) {
         if (value == 0) return false;
 

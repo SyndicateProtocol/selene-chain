@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import {Test, console} from "forge-std/Test.sol";
 import {MoonInteraction} from "../src/MoonInteraction.sol";
 import {Angel721} from "../src/token/Angel721.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MoonInteractionTest is Test {
     MoonInteraction public moonInteraction;

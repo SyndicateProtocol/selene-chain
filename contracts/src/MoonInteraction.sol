@@ -81,10 +81,4 @@ contract MoonInteraction is Ownable {
     function waningCrescent() public payable {
         emit WaningCrescent(msg.sender, msg.value);
     }
-
-    /// @notice Sets the owner of the contract
-    /// @param newOwner The new owner of the contract
-    function setOwner(address newOwner) public onlyOwner {
-        _transferOwnership(newOwner);
-    }
 }

@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
 import {MoonphasePermissionModule} from "../src/MoonphasePermissionModule.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MoonphasePermisionModuleTest is Test {
     MoonphasePermissionModule public moonphase;

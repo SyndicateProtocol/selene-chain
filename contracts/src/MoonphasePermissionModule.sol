@@ -8,6 +8,7 @@ import {console} from "forge-std/console.sol";
 
 contract MoonphasePermissionModule is Ownable, IPermissionModule {
     address public allowedContract;
+    uint256 public gasLimitToDataLengthRatio = 16;
 
     constructor(address _allowedContract) Ownable(msg.sender) {
         allowedContract = _allowedContract;
@@ -15,6 +16,10 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
 
     function setAllowedContract(address _allowedContract) public onlyOwner {
         allowedContract = _allowedContract;
+    }
+
+    function setGasLimitToDataLengthRatio(uint256 _gasLimitToDataLengthRatio) public onlyOwner {
+        gasLimitToDataLengthRatio = _gasLimitToDataLengthRatio;
     }
 
     /// @inheritdoc IPermissionModule
@@ -42,9 +47,14 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
             // High gas limit
             return gasLimit >= 2000000;
         } else if (phase == keccak256(abi.encodePacked("Last Quarter"))) {
-            // Gas efficient txs between gas limit and calldata ratio
-            // TODO @caleb [DELTA-7295]: finalize gas limit and calldata length
-            return gasLimit >= 1000000 && data.length <= 1000;
+            console.log("gasLimit", gasLimit);
+            console.log("data.length", data.length);
+            console.log(gasLimit / data.length);
+            // Ratio of gas limit to calldata length
+            if (data.length == 0) {
+                return true;
+            }
+            return gasLimit / data.length >= gasLimitToDataLengthRatio;
         } else if (phase == keccak256(abi.encodePacked("Waning Crescent"))) {
             // Low value txs (<= 0.1 ETH)
             return value <= 100000000000000000;

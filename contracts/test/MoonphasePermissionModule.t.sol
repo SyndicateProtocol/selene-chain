@@ -7,9 +7,10 @@ import {MoonphasePermissionModule} from "../src/MoonphasePermissionModule.sol";
 contract MoonphasePermisionModuleTest is Test {
     MoonphasePermissionModule public moonphase;
     address internal allowedContract = 0x1234567890123456789012345678901234567890;
+    address internal owner = address(this);
 
     function setUp() public {
-        moonphase = new MoonphasePermissionModule(allowedContract);
+        moonphase = new MoonphasePermissionModule(allowedContract, owner);
     }
 
     function test_NewMoon() public {

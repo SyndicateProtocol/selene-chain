@@ -10,7 +10,7 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
     address public allowedContract;
     uint256 public gasLimitToDataLengthRatio = 16;
 
-    constructor(address _allowedContract) Ownable(msg.sender) {
+    constructor(address _allowedContract, address owner) Ownable(owner) {
         allowedContract = _allowedContract;
     }
 

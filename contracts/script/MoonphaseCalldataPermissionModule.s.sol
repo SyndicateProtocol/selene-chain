@@ -5,16 +5,18 @@ import {Script, console} from "forge-std/Script.sol";
 import {MoonphasePermissionModule} from "../src/MoonphasePermissionModule.sol";
 
 contract MoonphasePermissionModuleScript is Script {
-    MoonphasePermissionModule public moonphasePermissionModule;
-    // @note TODO: Replace with actual address
-    address public allowedContract = 0x1234567890123456789012345678901234567890;
+    // @note TODO: Replace with actual addresses
+    address internal allowedContract = address(0x1);
+    address internal owner = address(0x2);
+
+    MoonphasePermissionModule internal moonphasePermissionModule;
 
     function setUp() public {}
 
     function run() public {
         vm.startBroadcast();
 
-        moonphasePermissionModule = new MoonphasePermissionModule(allowedContract);
+        moonphasePermissionModule = new MoonphasePermissionModule(allowedContract, owner);
 
         vm.stopBroadcast();
     }

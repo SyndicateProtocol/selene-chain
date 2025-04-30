@@ -42,6 +42,6 @@ yarn-error.log*
 next-env.d.ts
 
 # foundry
-lib
-out
-cache
+contracts/lib/
+contracts/out/
+contracts/cache/

@@ -25,6 +25,7 @@ contract MoonInteraction {
     // function newMoon() public {}
 
     // TODO: @caleb [DELTA-7292]
+    // UI: address input + number input for donation: (non-angel number donation = failed, angel number donation = succes)
     function firstQuarter(address to) public {
         angel.mint(to);
     }

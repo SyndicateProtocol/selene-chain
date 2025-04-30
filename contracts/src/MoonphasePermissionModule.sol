@@ -9,7 +9,9 @@ import {console} from "forge-std/console.sol";
 contract MoonphasePermissionModule is Ownable, IPermissionModule {
     address public allowedContract;
 
-    constructor() Ownable(msg.sender) {}
+    constructor(address _allowedContract) Ownable(msg.sender) {
+        allowedContract = _allowedContract;
+    }
 
     function setAllowedContract(address _allowedContract) public onlyOwner {
         allowedContract = _allowedContract;
@@ -132,13 +134,30 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
     }
 
     function isAngelNumber(uint256 value) internal pure returns (bool) {
-        uint256 lastDigit = value % 10;
+        if (value == 0) return false;
+
+        uint256 digit = 10;
+        uint256 digitCount = 0;
+
         while (value > 0) {
-            if (value % 10 != lastDigit) {
-                return false;
+            uint256 d = value % 10;
+
+            if (d == 0) {
+                // Allow trailing zeros
+                value /= 10;
+                continue;
             }
+
+            if (digit == 10) {
+                digit = d; // First non-zero digit
+            } else if (d != digit) {
+                return false; // More than one non-zero digit
+            }
+
+            digitCount++;
             value /= 10;
         }
-        return true;
+
+        return digitCount >= 3;
     }
 }

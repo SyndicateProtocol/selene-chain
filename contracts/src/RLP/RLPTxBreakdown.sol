@@ -41,7 +41,6 @@ library RLPTxBreakdown {
             address from
         )
     {
-        console.logBytes(txData);
         require(txData.length > 0, "Empty tx");
         require(txData[0] == 0x02, "Not EIP-1559");
         // Remove the type byte.

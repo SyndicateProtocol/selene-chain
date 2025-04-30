@@ -20,15 +20,15 @@ export default function HowTo() {
   const [feedback, setFeedback] = useState<string | null>(null)
 
   const lunarPhase = lunarPhases.find(
-    (phase) => phase.name === "Waning Gibbous Moon"
+    (phase) => phase.name === "Waning Gibbous"
   )
 
   // Map lunar phases to preferred transaction types
   // update when we have it codified
   const lunarPreferences: Record<string, string> = {
-    "Waning Gibbous Moon": "highGas",
-    "Full Moon": "lowCalldata",
-    "Waxing Crescent Moon": "nftMint"
+    "Waning Gibbous": "highGas",
+    "Full": "lowCalldata",
+    "Waxing Crescent": "nftMint"
   }
 
   // TODO - update

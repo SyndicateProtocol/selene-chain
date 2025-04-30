@@ -2,7 +2,6 @@
 pragma solidity 0.8.25;
 
 import {RLPReader} from "./RLPReader.sol";
-import {console} from "forge-std/console.sol";
 
 /**
  * @title RLPTxBreakdown

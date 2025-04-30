@@ -11,7 +11,7 @@ contract MoonInteractionTest is Test {
 
     function setUp() public {
         angel = new Angel721();
-        moonInteraction = new MoonInteraction(address(angel));
+        moonInteraction = new MoonInteraction(address(angel), address(this));
     }
 
     function test_NewMoon() public {

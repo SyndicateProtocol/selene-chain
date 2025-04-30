@@ -4,13 +4,15 @@ pragma solidity ^0.8.15;
 import {RLPTxBreakdown} from "./RLP/RLPTxBreakdown.sol";
 import {IPermissionModule} from "./interfaces/IPermissionModule.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {console} from "forge-std/console.sol";
 
 contract MoonphasePermissionModule is Ownable, IPermissionModule {
     address public allowedContract;
     uint256 public gasLimitToDataLengthRatio = 16;
 
-    constructor(address _allowedContract, address owner) Ownable(owner) {
+    /// @notice Constructor
+    /// @param _allowedContract The address of the allowed contract
+    /// @param _owner The owner of the contract
+    constructor(address _allowedContract, address _owner) Ownable(_owner) {
         allowedContract = _allowedContract;
     }
 

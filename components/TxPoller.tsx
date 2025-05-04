@@ -59,7 +59,7 @@ export default function TxPoller() {
         <h2 className="text-xl font-semibold">Latest Transactions</h2>
       </div>
       {isLoading && (
-        <div className="bg-black/5 backdrop-blur-sm rounded-xl p-6 flex justify-center items-center h-40">
+        <div className="bg-white/40 backdrop-blur-sm rounded-xl p-6 flex justify-center items-center h-40">
           <div className="flex flex-col items-center gap-2">
             <div className="h-5 w-5 border-2 border-t-transparent border-black/30  rounded-full animate-spin" />
 
@@ -77,14 +77,14 @@ export default function TxPoller() {
       {!isLoading && !error && (
         <div className="space-y-2 overflow-y-auto max-h-[70vh]">
           {transactions.length === 0 ? (
-            <div className="bg-black/5 backdrop-blur-sm rounded-xl p-6 text-center">
+            <div className="bg-white/40 backdrop-blur-sm rounded-xl p-6 text-center">
               <p className="text-black/70">No transactions found</p>
             </div>
           ) : (
             transactions.map((tx) => (
               <div
                 key={tx.hash}
-                className="bg-black/5 backdrop-blur-sm rounded-xl p-4 transition-all"
+                className="bg-white/40 backdrop-blur-sm rounded-xl p-4 transition-all"
               >
                 <div className="grid gap-2">
                   <div className="flex items-center gap-2 overflow-hidden">

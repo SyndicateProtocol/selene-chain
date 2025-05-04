@@ -1,11 +1,12 @@
 "use client"
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger
 } from "@/components/Accordion"
-import { lunarPhases } from "@/lib/constants"
+import useLunarPhase from "@/lib/hooks"
 import { useEffect, useState } from "react"
 import { codeToHtml } from "shiki"
 
@@ -19,55 +20,104 @@ export default function HowTo() {
   )
   const [feedback, setFeedback] = useState<string | null>(null)
 
-  const lunarPhase = lunarPhases.find(
-    (phase) => phase.name === "Waning Gibbous Moon"
-  )
+  const currentPhase = useLunarPhase();
 
-  // Map lunar phases to preferred transaction types
-  // update when we have it codified
+
+  // TODO: update this once we finalize contract
   const lunarPreferences: Record<string, string> = {
-    "Waning Gibbous Moon": "highGas",
-    "Full Moon": "lowCalldata",
-    "Waxing Crescent Moon": "nftMint"
+    "New Moon": "lowCalldata",
+    "Waxing Crescent": "contractCall",
+    "First Quarter": "angelNumber",
+    "Waxing Gibbous": "waxingGibbous",
+    "Full Moon": "tokenTransfer",
+    "Waning Gibbous": "highGas",
+    "Last Quarter": "balancedGas",
+    "Waning Crescent": "lowValue"
   }
 
-  // TODO - update
+  // TODO: update this once we finalize contract
   const codeSnippets = {
-    highGas: `
-const tx = await contract.executeHighGasPriorityTransaction({
-  value: viem.parseEther("0.1"),  
-  gasLimit: 500000,  // High gas limit to prioritize this transaction
-});
-    `,
-    nftMint: `
-const mintTx = await nftContract.mint({
-  to: "0xYourAddress",
-  tokenId: 123,
-  royaltyBps: 250,  // 2.5% royalty
-  gasLimit: 350000,
-});
-    `,
     lowCalldata: `
 // Compress calldata to minimize transaction size
-const compressedData = encodePacked(
-  ["uint8", "uint16", "address"],
-  [1, 1000, "0xRecipientAddress"]
+const tx = await contract.transferMinimal("0xRecipient", {
+  data: "0x1234",  // Very small calldata
+  gasLimit: 100000
+});
+    `,
+    contractCall: `
+// Call the allowed contract directly
+const tx = await moonInteraction.waxingCrescent({
+  gasLimit: 200000
+});
+    `,
+    angelNumber: `
+// Send with an angel number value
+const tx = await contract.donate({
+  value: ethers.utils.parseEther("0.333"),  // Angel number
+  gasLimit: 150000
+});
+    `,
+    waxingGibbous: `
+// Call the specific waxingGibbous function
+const tx = await moonInteraction.waxingGibbous({
+  gasLimit: 200000
+});
+    `,
+    tokenTransfer: `
+// Transfer ERC20 or ERC721 tokens
+const tx = await token.transfer(
+  "0xRecipient",
+  ethers.utils.parseEther("10"),
+  { gasLimit: 150000 }
 );
-
-const tx = await contract.executeMinimalTransaction(compressedData, {
-  gasLimit: 200000,
+    `,
+    highGas: `
+// High gas limit transaction
+const tx = await contract.execute({
+  gasLimit: 2500000  // High gas limit ≥ 2,000,000
+});
+    `,
+    balancedGas: `
+// Balanced gas/data transaction
+const tx = await contract.executeEfficient(data, {
+  gasLimit: 1200000,  // ≥ 1,000,000 with moderate calldata
+  data: "0x1234...5678" // ≤ 1,000 bytes
+});
+    `,
+    lowValue: `
+// Low value transaction
+const tx = await contract.send("0xRecipient", {
+  value: ethers.utils.parseEther("0.05"),  // ≤ 0.1 ETH
+  gasLimit: 100000
 });
     `
   }
 
   const transactionDescriptions = {
-    highGas:
-      "Gas-heavy transactions that prioritize speed and inclusion in the next block, regardless of cost.",
-    nftMint:
-      "Balanced transactions with moderate gas usage, perfect for creative operations like minting.",
-    lowCalldata:
-      "Efficient transactions that minimize on-chain data, optimizing for lower costs."
+    lowCalldata: "Efficient transactions with minimal calldata (≤ 100 bytes), optimizing for lower costs.",
+    contractCall: "Transactions targeting only the allowed MoonInteraction contract.",
+    angelNumber: "Transactions with angel numbers as ETH values (e.g., 0.333 ETH, 0.555 ETH).",
+    waxingGibbous: "Transactions that specifically call the waxingGibbous() function.",
+    tokenTransfer: "Transactions interacting with ERC20, ERC721, or ERC1155 token contracts.",
+    highGas: "Gas-heavy transactions with gas limit ≥ 2,000,000 units.",
+    balancedGas: "Balanced transactions with gas limit ≥ 1,000,000 and calldata ≤ 1,000 bytes.",
+    lowValue: "Low value transactions (≤ 0.1 ETH)."
   }
+
+  // Decide which 3 transaction types to display based on current phase
+  const getTransactionOptions = () => {
+    const correctType = lunarPreferences[currentPhase]
+
+    // Pick 2 others that aren't the correct one :-p
+    const otherTypes = Object.keys(codeSnippets)
+      .filter(type => type !== correctType)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 2)
+
+    return [correctType, ...otherTypes]
+  }
+
+  const transactionOptions = getTransactionOptions()
 
   useEffect(() => {
     const highlightAllCode = async () => {
@@ -119,20 +169,34 @@ const tx = await contract.executeMinimalTransaction(compressedData, {
   const handleRunTransaction = (transactionType: string) => {
     setSelectedTransaction(transactionType)
 
-    const preferredType =
-      lunarPreferences[lunarPhase?.name || ""] || "lowCalldata"
+    const preferredType = lunarPreferences[currentPhase] || "highGas"
 
     if (transactionType === preferredType) {
       setFeedback(
-        `✨ Great choice! The ${lunarPhase?.name} favors this type of transaction. Your transaction is being processed with priority.`
+        `✨ Great choice! The ${currentPhase} favors this type of transaction. Your transaction is being processed with priority.`
       )
     } else {
       setFeedback(
-        `⚠️ This transaction might not be optimal during the ${lunarPhase?.name}. The sequencer might delay processing it.`
+        `⚠️ This transaction might not be optimal during the ${currentPhase}. The sequencer might delay processing it.`
       )
     }
 
-    // Could add simulated transaction processing logic here
+    // TODO: integrate transaction cloud
+  }
+
+  // TODO: update this once we finalize contract
+  const getTransactionLabel = (type: string) => {
+    switch (type) {
+      case "lowCalldata": return "Low calldata transaction";
+      case "contractCall": return "Contract call";
+      case "angelNumber": return "Angel number donation";
+      case "waxingGibbous": return "Waxing Gibbous function call";
+      case "tokenTransfer": return "Token transfer";
+      case "highGas": return "High gas transaction";
+      case "balancedGas": return "Balanced gas transaction";
+      case "lowValue": return "Low value transaction";
+      default: return type;
+    }
   }
 
   return (
@@ -146,10 +210,7 @@ const tx = await contract.executeMinimalTransaction(compressedData, {
             The blockchain sequencer's mood is influenced by the current lunar
             phase:{" "}
             <span className="text-black font-semibold inline-flex items-center">
-              {lunarPhase?.name}
-              <span className="font-moonphases pl-1 text-lg">
-                {lunarPhase?.symbol}
-              </span>
+              {currentPhase}
             </span>
           </p>
           <p className="text-sm mt-3">
@@ -168,64 +229,26 @@ const tx = await contract.executeMinimalTransaction(compressedData, {
         )}
 
         <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="high-gas">
-            <AccordionTrigger className="font-medium">
-              High gas transaction
-            </AccordionTrigger>
-            <AccordionContent>
-              <p className="text-sm mb-3">{transactionDescriptions.highGas}</p>
-              {renderCodeBlock("highGas")}
-              <button
-                type="button"
-                onClick={() => handleRunTransaction("highGas")}
-                className={`${selectedTransaction === "highGas" ? "bg-gray-600" : "bg-black"} px-3 py-1.5 rounded-md text-sm text-white self-center mt-2 hover:bg-gray-800 transition-colors`}
-              >
-                {selectedTransaction === "highGas"
-                  ? "Processing..."
-                  : "Execute transaction →"}
-              </button>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="nft-mint">
-            <AccordionTrigger className="font-medium">
-              NFT mint
-            </AccordionTrigger>
-            <AccordionContent>
-              <p className="text-sm mb-3">{transactionDescriptions.nftMint}</p>
-              {renderCodeBlock("nftMint")}
-              <button
-                type="button"
-                onClick={() => handleRunTransaction("nftMint")}
-                className={`${selectedTransaction === "nftMint" ? "bg-gray-600" : "bg-black"} px-3 py-1.5 rounded-md text-sm text-white self-center mt-2 hover:bg-gray-800 transition-colors`}
-              >
-                {selectedTransaction === "nftMint"
-                  ? "Processing..."
-                  : "Execute transaction →"}
-              </button>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="low-calldata">
-            <AccordionTrigger className="font-medium">
-              Low calldata size
-            </AccordionTrigger>
-            <AccordionContent>
-              <p className="text-sm mb-3">
-                {transactionDescriptions.lowCalldata}
-              </p>
-              {renderCodeBlock("lowCalldata")}
-              <button
-                type="button"
-                onClick={() => handleRunTransaction("lowCalldata")}
-                className={`${selectedTransaction === "lowCalldata" ? "bg-gray-600" : "bg-black"} px-3 py-1.5 rounded-md text-sm text-white self-center mt-2 hover:bg-gray-800 transition-colors`}
-              >
-                {selectedTransaction === "lowCalldata"
-                  ? "Processing..."
-                  : "Execute transaction →"}
-              </button>
-            </AccordionContent>
-          </AccordionItem>
+          {transactionOptions.map((type) => (
+            <AccordionItem key={type} value={type}>
+              <AccordionTrigger className="font-medium">
+                {getTransactionLabel(type)}
+              </AccordionTrigger>
+              <AccordionContent>
+                <p className="text-sm mb-3">{transactionDescriptions[type as keyof typeof transactionDescriptions]}</p>
+                {renderCodeBlock(type as keyof typeof codeSnippets)}
+                <button
+                  type="button"
+                  onClick={() => handleRunTransaction(type)}
+                  className={`${selectedTransaction === type ? "bg-gray-600" : "bg-black"} px-3 py-1.5 rounded-md text-sm text-white self-center mt-2 hover:bg-gray-800 transition-colors`}
+                >
+                  {selectedTransaction === type
+                    ? "Processing..."
+                    : "Execute transaction →"}
+                </button>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
         </Accordion>
       </div>
     </div>

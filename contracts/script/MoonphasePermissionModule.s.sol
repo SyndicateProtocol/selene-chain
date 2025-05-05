@@ -81,44 +81,47 @@ contract DeployMoonInteraction is Script {
     }
 }
 
-// Deployed to: 0xc75954B9B4Bb4B80883Cf645744612138b7e4870
+// 0xA0E8Ee80b1Ae18Cd2aFC844502B72abC7f0EEA8D
 contract DeployMoonphasePermissionModule is Script {
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
-        address owner = vm.addr(privateKey);
         vm.startBroadcast(privateKey);
-        MoonphasePermissionModule moonphasePermissionModule =
-            new MoonphasePermissionModule(address(0x268e0A6c79107f74Cf5Ef3067C110952e9127843), owner);
+        MoonphasePermissionModule moonphasePermissionModule = new MoonphasePermissionModule(
+            address(0x268e0A6c79107f74Cf5Ef3067C110952e9127843), address(0x9334297A9c1B3c5cf96f8821385a629aC64AF154)
+        );
         console.log("MoonphasePermissionModule:", address(moonphasePermissionModule));
         vm.stopBroadcast();
     }
 }
 
+// 0x49436F4956E80D9e27826ec6e43f06b9a4E54C69
 contract DeployERC20 is Script {
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
-        ERC20 erc20 = new ERC20("MOON", "Moon");
+        ERC20 erc20 = new ERC20("MENE", "MENE");
         console.log("ERC20:", address(erc20));
         vm.stopBroadcast();
     }
 }
 
+// 0x00aE9e627E3601928cc793De95923346564aC62C
 contract DeployERC721 is Script {
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
-        ERC721 erc721 = new ERC721("MOON", "Moon", address(0x9cecA064CaB740E5F511b426c7dBD7820795fe13));
+        ERC721 erc721 = new ERC721("ARTEMIS", "ARTEMIS", address(0x9334297A9c1B3c5cf96f8821385a629aC64AF154));
         console.log("ERC721:", address(erc721));
         vm.stopBroadcast();
     }
 }
 
+// 0xe2874972fE163A86f08a4C25E6d41845487397D9
 contract DeployERC1155 is Script {
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
-        ERC1155 erc1155 = new ERC1155("MOON", address(0x9cecA064CaB740E5F511b426c7dBD7820795fe13));
+        ERC1155 erc1155 = new ERC1155("HECATE", address(0x9334297A9c1B3c5cf96f8821385a629aC64AF154));
         console.log("ERC1155:", address(erc1155));
         vm.stopBroadcast();
     }

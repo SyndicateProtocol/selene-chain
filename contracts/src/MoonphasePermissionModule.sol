@@ -115,7 +115,8 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
         bytes4 selector = getFunctionSelector(data);
         return selectorMatches(selector, "transfer(address,uint256)")
             || selectorMatches(selector, "approve(address,uint256)")
-            || selectorMatches(selector, "transferFrom(address,address,uint256)");
+            || selectorMatches(selector, "transferFrom(address,address,uint256)")
+            || selectorMatches(selector, "mint(address,uint256)") || selectorMatches(selector, "burn(uint256)");
     }
 
     /// @notice Checks if the calldata is an ERC721 call
@@ -127,7 +128,7 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
             || selectorMatches(selector, "safeTransferFrom(address,address,uint256,string)")
             || selectorMatches(selector, "transferFrom(address,address,uint256,bytes)")
             || selectorMatches(selector, "approve(address,uint256)")
-            || selectorMatches(selector, "setApprovalForAll(address,bool)");
+            || selectorMatches(selector, "setApprovalForAll(address,bool)") || selectorMatches(selector, "burn(uint256)");
     }
 
     /// @notice Checks if the calldata is an ERC1155 call
@@ -139,7 +140,9 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
             || selectorMatches(selector, "safeTransferFrom(address,address,uint256,string)")
             || selectorMatches(selector, "transferFrom(address,address,uint256,bytes)")
             || selectorMatches(selector, "approve(address,uint256)")
-            || selectorMatches(selector, "setApprovalForAll(address,bool)");
+            || selectorMatches(selector, "setApprovalForAll(address,bool)")
+            || selectorMatches(selector, "mint(address,uint256,uint256,bytes)")
+            || selectorMatches(selector, "burn(uint256,uint256)");
     }
 
     /// @notice Gets the function selector from the calldata

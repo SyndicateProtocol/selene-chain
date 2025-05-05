@@ -64,3 +64,14 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+# Deployments
+
+The following contracts have all been deployed to Selene
+
+| Contract Name             | Address                                                                                                                                     |
+| -----------------------   | ----------------- |
+| MoonphasePermissionModule | 0xc75954B9B4Bb4B80883Cf645744612138b7e4870 |
+| MoonInteraction           | 0x268e0A6c79107f74Cf5Ef3067C110952e9127843 |
+| Angel721                  | 0x9cecA064CaB740E5F511b426c7dBD7820795fe13 |
+| ERC20                     | 

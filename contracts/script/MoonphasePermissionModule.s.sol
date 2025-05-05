@@ -8,6 +8,10 @@ import {Angel721} from "../src/token/Angel721.sol";
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
+import {ERC20} from "../src/token/ERC20.sol";
+import {ERC721} from "../src/token/ERC721.sol";
+import {ERC1155} from "../src/token/ERC1155.sol";
+
 contract MoonphasePermissionModuleScript is Script {
     MoonphasePermissionModule internal moonphasePermissionModule;
     Angel721 internal angel;
@@ -86,6 +90,36 @@ contract DeployMoonphasePermissionModule is Script {
         MoonphasePermissionModule moonphasePermissionModule =
             new MoonphasePermissionModule(address(0x268e0A6c79107f74Cf5Ef3067C110952e9127843), owner);
         console.log("MoonphasePermissionModule:", address(moonphasePermissionModule));
+        vm.stopBroadcast();
+    }
+}
+
+contract DeployERC20 is Script {
+    function run() public {
+        uint256 privateKey = vm.envUint("PRIVATE_KEY");
+        vm.startBroadcast(privateKey);
+        ERC20 erc20 = new ERC20("MOON", "Moon");
+        console.log("ERC20:", address(erc20));
+        vm.stopBroadcast();
+    }
+}
+
+contract DeployERC721 is Script {
+    function run() public {
+        uint256 privateKey = vm.envUint("PRIVATE_KEY");
+        vm.startBroadcast(privateKey);
+        ERC721 erc721 = new ERC721("MOON", "Moon", address(0x9cecA064CaB740E5F511b426c7dBD7820795fe13));
+        console.log("ERC721:", address(erc721));
+        vm.stopBroadcast();
+    }
+}
+
+contract DeployERC1155 is Script {
+    function run() public {
+        uint256 privateKey = vm.envUint("PRIVATE_KEY");
+        vm.startBroadcast(privateKey);
+        ERC1155 erc1155 = new ERC1155("MOON", address(0x9cecA064CaB740E5F511b426c7dBD7820795fe13));
+        console.log("ERC1155:", address(erc1155));
         vm.stopBroadcast();
     }
 }

@@ -1,6 +1,6 @@
+import { SELENE_CHAIN } from "@/lib/constants"
 import { NextResponse } from "next/server"
 import { http, createPublicClient } from "viem"
-import { mainnet } from "viem/chains"
 
 function serializeBigInts(obj: any): any {
   if (obj === null || obj === undefined) {
@@ -29,10 +29,8 @@ function serializeBigInts(obj: any): any {
 export async function GET() {
   try {
     const client = createPublicClient({
-      chain: mainnet,
-      transport: http(
-        `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`
-      )
+      chain: SELENE_CHAIN,
+      transport: http()
     })
 
     const blockNumber = await client.getBlockNumber()

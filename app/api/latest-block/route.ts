@@ -48,21 +48,18 @@ export async function GET(request: Request) {
 
     // For regular requests, just return the latest block
     if (!fetchHistorical) {
-      // Add the timestamp to each transaction in the block
+      let txsWithTimestamp = [] as Array<any>
       if (block.transactions && Array.isArray(block.transactions)) {
-        const txsWithTimestamp = (block.transactions as Transaction[]).map(
-          (tx) => ({
-            ...tx,
-            blockTimestamp: block.timestamp ?? (BigInt(0) as bigint)
-          })
-        )
-
-        block.transactions = txsWithTimestamp
+        txsWithTimestamp = block.transactions.map((tx) => ({
+          ...tx,
+          blockTimestamp: block.timestamp
+        }))
       }
 
       const serializedData = serializeBigInts({
         blockNumber,
-        block
+        block,
+        transactionsWithTimestamps: txsWithTimestamp
       })
       return NextResponse.json(serializedData)
     }

@@ -3,4 +3,8 @@ src = "src"
 out = "out"
 libs = ["lib"]
 
+[rpc_endpoints]
+selene = "https://selene.rpc.testnet.syndicate.io"
+exo = "https://syndicate-exo.g.alchemy.com/v2/z5h0zUXmyg_xtPUQgYxBCUtw97GBtGzD"
+
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

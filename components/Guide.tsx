@@ -2,15 +2,12 @@
 
 import { lunarPhases } from "@/lib/constants"
 import useLunarPhase from "@/lib/hooks";
+import { reorderLunarPhases } from "@/lib/utils";
 
 export default function Guide() {
   const currentPhase = useLunarPhase();
 
-  const sortedPhases = [...lunarPhases].sort((a, b) => {
-    if (a.name === currentPhase) return -1;
-    if (b.name === currentPhase) return 1;
-    return 0;
-  });
+  const sortedPhases = reorderLunarPhases(lunarPhases, currentPhase);
 
   return (
     <div className="grid gap-2 max-w-96 min-w-72 font-geist">

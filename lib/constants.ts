@@ -1,10 +1,10 @@
-export interface LunarPhase {
+export interface LunarPhaseInterface {
   name: string
   symbol: string
   priority: string
 }
 
-export const lunarPhases: LunarPhase[] = [
+export const lunarPhases: LunarPhaseInterface[] = [
   {
     name: "New",
     symbol: "A",

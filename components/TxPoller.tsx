@@ -79,9 +79,9 @@ export default function TxPoller() {
       }
 
       setBlockNumber(data.blockNumber)
-      if (data.block.transactions && Array.isArray(data.block.transactions)) {
+      if (data.transactionsWithTimestamps && Array.isArray(data.transactionsWithTimestamps)) {
         setTransactions((prev) => {
-          const newTxs = data.block.transactions as Transaction[]
+          const newTxs = data.transactionsWithTimestamps as Transaction[]
           const updated = [...newTxs, ...prev]
           return updated.slice(0, 50) // Keep only the latest 50 txs
         })

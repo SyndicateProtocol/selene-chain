@@ -11,7 +11,7 @@ contract MoonInteractionTest is Test {
     Angel721 public angel;
 
     function setUp() public {
-        angel = new Angel721();
+        angel = new Angel721("https://api.angel.com/", address(this));
         moonInteraction = new MoonInteraction(address(angel), address(this));
     }
 

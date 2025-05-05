@@ -46,3 +46,28 @@ export const lunarPhases: LunarPhaseInterface[] = [
     priority: "Prioritizes gas-efficient transactions"
   }
 ]
+
+export const SELENE_CHAIN = {
+  id: 63_888,
+  name: "Selene",
+  network: "selene",
+  nativeCurrency: {
+    decimals: 18,
+    name: "ETH",
+    symbol: "ETH"
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://selene.rpc.testnet.syndicate.io"]
+    },
+    public: {
+      http: ["https://selene.rpc.testnet.syndicate.io"]
+    }
+  },
+  blockExplorers: {
+    default: {
+      name: "Selene Explorer",
+      url: "https://selene.explorer.testnet.syndicate.io"
+    }
+  }
+}

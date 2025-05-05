@@ -14,8 +14,6 @@ const HowTo = dynamic(() => import("@/components/HowTo"), {
   ssr: false
 })
 
-
-
 export default function Home() {
   return (
     <section className="font-geist">

@@ -1,7 +1,7 @@
 "use client"
 
 import Guide from "@/components/Guide"
-import HowTo from "@/components/HowTo"
+
 import MoonPhase from "@/components/MoonPhase"
 import TxPoller from "@/components/TxPoller"
 import dynamic from "next/dynamic"
@@ -9,6 +9,12 @@ import dynamic from "next/dynamic"
 const ModelViewer = dynamic(() => import("@/components/ModelViewer"), {
   ssr: false
 })
+
+const HowTo = dynamic(() => import("@/components/HowTo"), {
+  ssr: false
+})
+
+
 
 export default function Home() {
   return (

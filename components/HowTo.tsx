@@ -95,13 +95,13 @@ const hash = await walletClient.writeContract({
   address: moonPhaseContract.address,
   abi: moonPhaseAbi,
   functionName: 'firstQuarter',
-  args: ['0x268e0A6c79107f74Cf5Ef3067C110952e9127843'], // Moon contract
+  args: ['0x75020317574aB0003A0D8B30F795c42b97d566F8'], // Moon contract
   value: BigInt(111), // Angel number: 111 wei
 });
       `,
       config: {
         functionSignature: "firstQuarter(address)",
-        args: { "0": "0x268e0A6c79107f74Cf5Ef3067C110952e9127843" },
+        args: { "0": "0x75020317574aB0003A0D8B30F795c42b97d566F8" },
         value: "111" // Angel number
       },
       label: "Angel number donation"
@@ -129,12 +129,12 @@ const hash = await walletClient.writeContract({
   address: moonPhaseContract.address,
   abi: moonPhaseAbi,
   functionName: 'firstQuarter',
-  args: ['0x268e0A6c79107f74Cf5Ef3067C110952e9127843'], // Moon contract
+  args: ['0x75020317574aB0003A0D8B30F795c42b97d566F8'], // Moon contract
 });
       `,
       config: {
         functionSignature: "fullMoon(address)",
-        args: { "0": "0x268e0A6c79107f74Cf5Ef3067C110952e9127843" }
+        args: { "0": "0x75020317574aB0003A0D8B30F795c42b97d566F8" }
       },
       label: "Token transfer"
     },
@@ -305,7 +305,6 @@ const hash = await walletClient.writeContract({
     }
   };
 
-  // Helper function to determine button text
   const getButtonText = (type: TransactionType) => {
     if (selectedTransaction === type) {
       return "Processing...";
@@ -320,7 +319,6 @@ const hash = await walletClient.writeContract({
     }
   };
 
-  // Helper function to determine button style
   const getButtonStyle = (type: TransactionType) => {
     if (selectedTransaction === type) {
       return "bg-gray-600";
@@ -333,7 +331,7 @@ const hash = await walletClient.writeContract({
     }
   };
 
-  // Helper function to determine if button should be disabled
+
   const isButtonDisabled = (type: TransactionType) => {
     return isTransactionLoading ||
       (selectedTransaction !== null && selectedTransaction !== type) ||

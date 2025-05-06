@@ -1,6 +1,9 @@
+import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from "next"
 import { Geist, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+const queryClient = new QueryClient()
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +30,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${jetBrainsMono.variable} antialiased`}
       >
-        {children}
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+        <Analytics />
       </body>
     </html>
   )

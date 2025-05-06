@@ -13,6 +13,13 @@ export function useMoonPhase(): MoonPhase {
   return context.moonPhase
 }
 
+interface TransactionPayload {
+  contractAddress: string
+  chainId: number
+  functionSignature: string
+  value?: string
+}
+
 export function useLunarTransaction() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -25,25 +32,29 @@ export function useLunarTransaction() {
     args: Record<string, any>,
     options?: {
       value?: string
-      gasLimit?: string
     }
   ) => {
     setIsLoading(true)
     setError(null)
 
     try {
+      const payload: TransactionPayload = {
+        contractAddress: MOONPHASE_INTERACTION_CONTRACT,
+        chainId: 63888,
+        functionSignature,
+        args
+      }
+
+      if (options?.value) {
+        payload.value = options.value
+      }
+
       const response = await fetch("/api/transact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          contractAddress: MOONPHASE_INTERACTION_CONTRACT,
-          chainId: 63888,
-          functionSignature,
-          args,
-          ...options
-        })
+        body: JSON.stringify(payload)
       })
 
       const data = await response.json()

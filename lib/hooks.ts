@@ -1,17 +1,12 @@
-import { useState } from "react"
+"use client"
 
-export type LunarPhase =
-  | "New Moon"
-  | "Waxing Crescent"
-  | "First Quarter"
-  | "Waxing Gibbous"
-  | "Full Moon"
-  | "Waning Gibbous"
-  | "Last Quarter"
-  | "Waning Crescent"
+import {
+  type MoonPhase,
+  MoonPhaseContext
+} from "@/components/MoonPhaseProvider"
+import { useContext } from "react"
 
-export default function useLunarPhase(): LunarPhase {
-  const [phase] = useState<LunarPhase>("Waning Gibbous")
-  // In the future, this hook will fetch the actual lunar phase from the contract
-  return phase
+export function useMoonPhase(): MoonPhase {
+  const context = useContext(MoonPhaseContext)
+  return context.moonPhase
 }

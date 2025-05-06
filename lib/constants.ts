@@ -49,7 +49,8 @@ export const lunarPhases: LunarPhaseInterface[] = [
   }
 ]
 
-// Only use this on
+const EXO_RPC_URL =
+  process.env.EXO_RPC || "https://syndicate-exo.g.alchemy.com/v2"
 export const SYNDICATE_EXO = {
   id: 5_113,
   name: "Syndicate Exo",
@@ -57,10 +58,10 @@ export const SYNDICATE_EXO = {
   nativeCurrency: { name: "SYND", symbol: "SYND", decimals: 18 },
   rpcUrls: {
     default: {
-      http: [process.env.EXO_RPC]
+      http: [EXO_RPC_URL] as readonly string[]
     },
     public: {
-      http: [process.env.EXO_RPC]
+      http: [EXO_RPC_URL] as readonly string[]
     }
   },
   blockExplorers: {

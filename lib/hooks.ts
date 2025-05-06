@@ -17,6 +17,7 @@ interface TransactionPayload {
   contractAddress: string
   chainId: number
   functionSignature: string
+  args: Record<string, any>
   value?: string
 }
 

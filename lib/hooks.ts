@@ -6,7 +6,7 @@ import {
 } from "@/components/MoonPhaseProvider"
 import { useContext } from "react"
 import { useState } from "react"
-import { MOONPHASE_PERMISSION_MODULE, lunarPreferences } from "./constants"
+import { MOONPHASE_INTERACTION_CONTRACT, lunarPreferences } from "./constants"
 
 export function useMoonPhase(): MoonPhase {
   const context = useContext(MoonPhaseContext)
@@ -38,7 +38,7 @@ export function useLunarTransaction() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          contractAddress: MOONPHASE_PERMISSION_MODULE,
+          contractAddress: MOONPHASE_INTERACTION_CONTRACT,
           chainId: 63888,
           functionSignature,
           args,

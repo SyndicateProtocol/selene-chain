@@ -72,7 +72,7 @@ The following contracts have all been deployed to Selene
 | Contract Name             | Address                                    | Chain    |
 | -----------------------   | ------------------------------------------ | -------  |
 | MoonphasePermissionModule | 0x255a995685FAf63FE69c60Edd3e414DA3CB8fe7d | Exo      |
-| MoonInteraction           | 0x75020317574aB0003A0D8B30F795c42b97d566F8 | Selene   |
+| MoonInteraction           | 0xf2921AF55D7d01d1441c58F3EfA9EcE1f405FBC2 | Selene   |
 | Angel721                  | 0x9cecA064CaB740E5F511b426c7dBD7820795fe13 | Selene   |
 | ERC20                     | 0x49436F4956E80D9e27826ec6e43f06b9a4E54C69 | Selene   |
 | ERC721                    | 0x00aE9e627E3601928cc793De95923346564aC62C | Selene   |

@@ -1,3 +1,4 @@
+import type { MoonPhaseData } from "@/components/MoonPhaseProvider"
 import { MOONPHASE_PERMISSION_MODULE, SELENE_CHAIN } from "@/lib/constants"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
@@ -36,9 +37,6 @@ const moonPhaseAbi = [
     type: "function"
   }
 ] as const
-export interface MoonPhaseData {
-  moonPhase: string
-}
 
 export async function getMoonPhaseData(): Promise<MoonPhaseData> {
   const client = createPublicClient({

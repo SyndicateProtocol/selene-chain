@@ -16,10 +16,11 @@ contract MoonInteraction is Ownable {
     event WaningGibbous(string);
     event LastQuarter(string, address indexed);
     event WaningCrescent(address indexed, uint256 indexed);
-
+    event Withdraw(address indexed, uint256 indexed);
     /// @notice Constructor
     /// @param _angel721Address The address of the Angel721 contract
     /// @param _owner The owner of the contract
+
     constructor(address _angel721Address, address _owner) Ownable(_owner) {
         angel = Angel721(_angel721Address);
     }
@@ -80,5 +81,13 @@ contract MoonInteraction is Ownable {
     /// @notice Emits the WaningCrescent event
     function waningCrescent() public payable {
         emit WaningCrescent(msg.sender, msg.value);
+    }
+
+    /// @notice Withdraws the balance of the contract to the owner
+    function withdraw() public {
+        address owner = owner();
+        uint256 balance = address(this).balance;
+        emit Withdraw(owner, balance);
+        payable(owner).transfer(balance);
     }
 }

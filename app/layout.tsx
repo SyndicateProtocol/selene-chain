@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import { Geist, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { MoonPhaseProvider } from "@/components/MoonPhaseProvider"
-import Provider from "@/components/Provider"
 import { getMoonPhaseData } from "@/lib/utils"
 
 
@@ -37,9 +36,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${jetBrainsMono.variable} antialiased`}
       >
         <MoonPhaseProvider value={moonPhaseData}>
-          <Provider>
-            {children}
-          </Provider>
+          {children}
         </MoonPhaseProvider>
         <Analytics />
       </body>

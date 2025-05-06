@@ -322,10 +322,8 @@ const hash = await walletClient.writeContract({
   const getButtonStyle = (type: TransactionType) => {
     if (selectedTransaction === type) {
       return "bg-gray-600";
-    } else if (successfulTx === type) {
-      return "bg-green-600";
     } else if (cooldownTx === type || isTransactionLoading || (selectedTransaction !== null && selectedTransaction !== type)) {
-      return "bg-gray-400 cursor-not-allowed";
+      return "bg-gray-500 cursor-not-allowed";
     } else {
       return "bg-black hover:bg-gray-800";
     }

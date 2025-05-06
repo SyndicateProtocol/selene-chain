@@ -9,17 +9,19 @@ export async function POST(request: Request) {
       projectId: "74093453-7cc7-45a2-8bfc-2c186531858c",
       ...data
     }
-    const response = await fetch(
-      "https://api.syndicate.io/transact/sendTransaction",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      }
-    )
+
+    const endpoint = payload.value
+      ? "https://api.syndicate.io/transact/sendTransactionWithValue"
+      : "https://api.syndicate.io/transact/sendTransaction"
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    })
 
     const responseData = await response.json()
 

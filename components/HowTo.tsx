@@ -6,7 +6,8 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "@/components/Accordion"
-import useLunarPhase from "@/lib/hooks"
+import { useMoonPhase } from "@/lib/hooks"
+
 import { useEffect, useState } from "react"
 import { codeToHtml } from "shiki"
 
@@ -20,10 +21,9 @@ export default function HowTo() {
   )
   const [feedback, setFeedback] = useState<string | null>(null)
 
-  const currentPhase = useLunarPhase();
+  const currentPhase = useMoonPhase();
 
 
-  // TODO: update this once we finalize contract
   const lunarPreferences: Record<string, string> = {
     "New Moon": "lowCalldata",
     "Waxing Crescent": "contractCall",
@@ -35,67 +35,84 @@ export default function HowTo() {
     "Waning Crescent": "lowValue"
   }
 
-  // TODO: update this once we finalize contract
+
   const codeSnippets = {
     lowCalldata: `
-// Compress calldata to minimize transaction size
-const tx = await contract.transferMinimal("0xRecipient", {
-  data: "0x1234",  // Very small calldata
-  gasLimit: 100000
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'newMoon',
+  args: ['0x1234'] 
 });
     `,
     contractCall: `
-// Call the allowed contract directly
-const tx = await moonInteraction.waxingCrescent({
-  gasLimit: 200000
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'waxingCrescent',
+  args: []
 });
     `,
     angelNumber: `
-// Send with an angel number value
-const tx = await contract.donate({
-  value: ethers.utils.parseEther("0.333"),  // Angel number
-  gasLimit: 150000
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'firstQuarter',
+  args: ['0x268e0A6c79107f74Cf5Ef3067C110952e9127843'], // Moon contract
+  value: BigInt(111), // Angel number: 111 wei
 });
     `,
     waxingGibbous: `
-// Call the specific waxingGibbous function
-const tx = await moonInteraction.waxingGibbous({
-  gasLimit: 200000
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'waxingGibbous',
+  args: [],
 });
     `,
     tokenTransfer: `
-// Transfer ERC20 or ERC721 tokens
-const tx = await token.transfer(
-  "0xRecipient",
-  ethers.utils.parseEther("10"),
-  { gasLimit: 150000 }
-);
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'firstQuarter',
+  args: ['0x268e0A6c79107f74Cf5Ef3067C110952e9127843'], // Moon contract
+});
     `,
     highGas: `
-// High gas limit transaction
-const tx = await contract.execute({
-  gasLimit: 2500000  // High gas limit ≥ 2,000,000
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'waningGibbous',
+  args: [],
+  gas: BigInt(2500000)  // High gas limit ≥ 2,000,000
 });
     `,
     balancedGas: `
-// Balanced gas/data transaction
-const tx = await contract.executeEfficient(data, {
-  gasLimit: 1200000,  // ≥ 1,000,000 with moderate calldata
-  data: "0x1234...5678" // ≤ 1,000 bytes
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'lastQuarter',
+  args: [
+    ["Message1", "Message2"], 
+    ["0xRecipient1", "0xRecipient2"] 
+  ],
+  gas: BigInt(1200000)  // Appropriate for moderate calldata
 });
     `,
     lowValue: `
-// Low value transaction
-const tx = await contract.send("0xRecipient", {
-  value: ethers.utils.parseEther("0.05"),  // ≤ 0.1 ETH
-  gasLimit: 100000
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'waningCrescent',
+  args: [],
+  value: BigInt(50000000000000), // 0.00005 ETH
 });
     `
   }
 
   const transactionDescriptions = {
     lowCalldata: "Efficient transactions with minimal calldata (≤ 100 bytes), optimizing for lower costs.",
-    contractCall: "Transactions targeting only the allowed MoonInteraction contract.",
+    contractCall: "Transactions targeting only the allowed Waxing Crescent contract call.",
     angelNumber: "Transactions with angel numbers as ETH values (e.g., 0.333 ETH, 0.555 ETH).",
     waxingGibbous: "Transactions that specifically call the waxingGibbous() function.",
     tokenTransfer: "Transactions interacting with ERC20, ERC721, or ERC1155 token contracts.",
@@ -177,18 +194,18 @@ const tx = await contract.send("0xRecipient", {
       )
     } else {
       setFeedback(
-        `⚠️ This transaction might not be optimal during the ${currentPhase}. The sequencer might delay processing it.`
+        `⚠️ This transaction is not optimal during the ${currentPhase}. The sequencer won't process it.`
       )
     }
 
     // TODO: integrate transaction cloud
   }
 
-  // TODO: update this once we finalize contract
+
   const getTransactionLabel = (type: string) => {
     switch (type) {
       case "lowCalldata": return "Low calldata transaction";
-      case "contractCall": return "Contract call";
+      case "contractCall": return "Waxing Crescent contract call";
       case "angelNumber": return "Angel number donation";
       case "waxingGibbous": return "Waxing Gibbous function call";
       case "tokenTransfer": return "Token transfer";
@@ -240,7 +257,7 @@ const tx = await contract.send("0xRecipient", {
                 <button
                   type="button"
                   onClick={() => handleRunTransaction(type)}
-                  className={`${selectedTransaction === type ? "bg-gray-600" : "bg-black"} px-3 py-1.5 rounded-md text-sm text-white self-center mt-2 hover:bg-gray-800 transition-colors`}
+                  className={`${selectedTransaction === type ? "bg-gray-600" : "bg-black"} px-3 py-1.5 rounded-md text-sm text-white self-center mt-2`}
                 >
                   {selectedTransaction === type
                     ? "Processing..."

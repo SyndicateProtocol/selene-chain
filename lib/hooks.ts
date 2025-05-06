@@ -64,12 +64,10 @@ export function useLunarTransaction() {
     }
   }
 
-  // Helper to check if a transaction type is preferred during current moon phase
   const isPreferredTransaction = (transactionType: string): boolean => {
     return lunarPreferences[currentPhase] === transactionType
   }
 
-  // Get the preferred transaction type for current moon phase
   const getPreferredTransactionType = (): string => {
     return lunarPreferences[currentPhase] || "highGas"
   }

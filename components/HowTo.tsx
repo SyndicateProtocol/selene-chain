@@ -126,10 +126,10 @@ const hash = await walletClient.writeContract({
       description: "Transactions interacting with ERC20, ERC721, or ERC1155 token contracts.",
       code: `
 const hash = await walletClient.writeContract({
-  address: moonPhaseContract.address,
-  abi: moonPhaseAbi,
-  functionName: 'firstQuarter',
-  args: ['0x75020317574aB0003A0D8B30F795c42b97d566F8'], // Moon contract
+  address: 0x49436F4956E80D9e27826ec6e43f06b9a4E54C69, // ERC20 token contract
+  abi: ERC20Abi,
+  functionName: 'mint',
+  args: ['0x75020317574aB0003A0D8B30F795c42b97d566F8', 1000000000000000000],
 });
       `,
       config: {

@@ -1,5 +1,5 @@
 import type { MoonPhaseData } from "@/components/MoonPhaseProvider"
-import { MOONPHASE_PERMISSION_MODULE, SELENE_CHAIN } from "@/lib/constants"
+import { MOONPHASE_PERMISSION_MODULE, SYNDICATE_EXO } from "@/lib/constants"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { http, createPublicClient, getContract } from "viem"
@@ -40,7 +40,7 @@ const moonPhaseAbi = [
 
 export async function getMoonPhaseData(): Promise<MoonPhaseData> {
   const client = createPublicClient({
-    chain: SELENE_CHAIN,
+    chain: SYNDICATE_EXO,
     transport: http()
   })
 

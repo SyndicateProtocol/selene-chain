@@ -7,7 +7,7 @@ import {
   AccordionTrigger
 } from "@/components/Accordion"
 import { lunarPreferences } from "@/lib/constants"
-import { useMoonPhase } from "@/lib/hooks"
+import { useLunarTransaction, useMoonPhase } from "@/lib/hooks"
 
 import { useEffect, useState } from "react"
 import { codeToHtml } from "shiki"
@@ -23,6 +23,12 @@ export default function HowTo() {
   const [feedback, setFeedback] = useState<string | null>(null)
 
   const currentPhase = useMoonPhase();
+  const {
+    sendTransaction,
+    isLoading: isTransactionLoading,
+    error: transactionError,
+    transactionResult
+  } = useLunarTransaction();
 
 
   const codeSnippets = {
@@ -99,6 +105,46 @@ const hash = await walletClient.writeContract({
     `
   }
 
+  const transactionConfigs = {
+    lowCalldata: {
+      functionSignature: "newMoon(bytes)",
+      args: { "0": "0x1234" }
+    },
+    contractCall: {
+      functionSignature: "waxingCrescent()",
+      args: {}
+    },
+    angelNumber: {
+      functionSignature: "firstQuarter(address)",
+      args: { "0": "0x268e0A6c79107f74Cf5Ef3067C110952e9127843" },
+      value: "111" // Angel number
+    },
+    waxingGibbous: {
+      functionSignature: "waxingGibbous()",
+      args: {}
+    },
+    tokenTransfer: {
+      functionSignature: "fullMoon(address)",
+      args: { "0": "0x268e0A6c79107f74Cf5Ef3067C110952e9127843" }
+    },
+    highGas: {
+      functionSignature: "waningGibbous()",
+      args: {},
+    },
+    balancedGas: {
+      functionSignature: "lastQuarter(string[],address[])",
+      args: {
+        "0": ["Message1", "Message2"],
+        "1": ["0xRecipient1", "0xRecipient2"]
+      },
+    },
+    lowValue: {
+      functionSignature: "waningCrescent()",
+      args: {},
+      value: "50000000000000" // 0.00005 ETH
+    }
+  };
+
   const transactionDescriptions = {
     lowCalldata: "Efficient transactions with minimal calldata (≤ 100 bytes), optimizing for lower costs.",
     contractCall: "Transactions targeting only the allowed Waxing Crescent contract call.",
@@ -172,22 +218,43 @@ const hash = await walletClient.writeContract({
     )
   }
 
-  const handleRunTransaction = (transactionType: string) => {
+  const handleRunTransaction = async (transactionType: string) => {
     setSelectedTransaction(transactionType)
+    setFeedback(null)
 
     const preferredType = lunarPreferences[currentPhase] || "highGas"
+    const isPreferred = transactionType === preferredType
 
-    if (transactionType === preferredType) {
-      setFeedback(
-        `✨ Great choice! The ${currentPhase} favors this type of transaction. Your transaction is being processed with priority.`
+    try {
+      // Get the transaction configuration
+      const config = transactionConfigs[transactionType as keyof typeof transactionConfigs]
+
+      // Send the transaction using our hook
+      await sendTransaction(
+        config.functionSignature,
+        config.args,
+        {
+          value: config.value,
+        }
       )
-    } else {
+
+      // Show feedback based on whether this transaction type is preferred
+      if (isPreferred) {
+        setFeedback(
+          `✨ Great choice! The ${currentPhase} favors this type of transaction. Your transaction is being processed with priority.`
+        )
+      } else {
+        setFeedback(
+          `⚠️ This transaction is not optimal during the ${currentPhase}. The sequencer won't process it.`
+        )
+      }
+    } catch (err) {
+      console.error("Transaction error:", err)
       setFeedback(
-        `⚠️ This transaction is not optimal during the ${currentPhase}. The sequencer won't process it.`
+        `❌ Transaction failed: ${err instanceof Error ? err.message : "Unknown error"}`
       )
     }
 
-    // TODO: integrate transaction cloud
   }
 
 
@@ -250,7 +317,9 @@ const hash = await walletClient.writeContract({
                 >
                   {selectedTransaction === type
                     ? "Processing..."
-                    : "Execute transaction →"}
+                    : isTransactionLoading
+                      ? "Please wait..."
+                      : "Execute transaction →"}
                 </button>
               </AccordionContent>
             </AccordionItem>

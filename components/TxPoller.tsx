@@ -115,7 +115,7 @@ export default function TxPoller() {
     }
   }, [fetchLatestBlock, blockNumber])
 
-  console.log({ transactions })
+
 
   return (
     <section className="w-full basis-full">

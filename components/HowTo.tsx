@@ -67,7 +67,7 @@ const hash = await walletClient.writeContract({
 });
       `,
       config: {
-        functionSignature: "newMoon(bytes)",
+        functionSignature: "newMoon(string)",
         args: { "0": "0x1234" }
       },
       label: "Low calldata transaction"
@@ -133,8 +133,8 @@ const hash = await walletClient.writeContract({
 });
       `,
       config: {
-        functionSignature: "fullMoon(address)",
-        args: { "0": "0x75020317574aB0003A0D8B30F795c42b97d566F8" }
+        functionSignature: "mint(address,uint256)",
+        args: { "0": "0x49436F4956E80D9e27826ec6e43f06b9a4E54C69", "1": "1" },
       },
       label: "Token transfer"
     },
@@ -173,7 +173,7 @@ const hash = await walletClient.writeContract({
         functionSignature: "lastQuarter(string[],address[])",
         args: {
           "0": ["Message1", "Message2"],
-          "1": ["0xRecipient1", "0xRecipient2"]
+          "1": ["0x1234567890123456789012345678901234567890", "0x1234567890123456789012345678901234567890"]
         }
       },
       label: "Balanced gas transaction"
@@ -280,7 +280,6 @@ const hash = await walletClient.writeContract({
           value: config.value,
         }
       );
-
 
       setSuccessfulTx(type);
       setSelectedTransaction(null);

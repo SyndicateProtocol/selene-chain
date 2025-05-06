@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "@/components/Accordion"
+import { lunarPreferences } from "@/lib/constants"
 import { useMoonPhase } from "@/lib/hooks"
 
 import { useEffect, useState } from "react"
@@ -22,18 +23,6 @@ export default function HowTo() {
   const [feedback, setFeedback] = useState<string | null>(null)
 
   const currentPhase = useMoonPhase();
-
-
-  const lunarPreferences: Record<string, string> = {
-    "New Moon": "lowCalldata",
-    "Waxing Crescent": "contractCall",
-    "First Quarter": "angelNumber",
-    "Waxing Gibbous": "waxingGibbous",
-    "Full Moon": "tokenTransfer",
-    "Waning Gibbous": "highGas",
-    "Last Quarter": "balancedGas",
-    "Waning Crescent": "lowValue"
-  }
 
 
   const codeSnippets = {

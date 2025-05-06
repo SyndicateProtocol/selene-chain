@@ -41,7 +41,6 @@ contract MoonphasePermissionModuleScript is Script {
     }
 }
 
-// Deployed to: 0x9cecA064CaB740E5F511b426c7dBD7820795fe13
 contract DeployAngel721 is Script {
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
@@ -68,7 +67,6 @@ contract UpdateAngel721BaseURI is Script {
     }
 }
 
-// Deployed to: 0x268e0A6c79107f74Cf5Ef3067C110952e9127843
 contract DeployMoonInteraction is Script {
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
@@ -81,7 +79,6 @@ contract DeployMoonInteraction is Script {
     }
 }
 
-// 0xA0E8Ee80b1Ae18Cd2aFC844502B72abC7f0EEA8D
 contract DeployMoonphasePermissionModule is Script {
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
@@ -94,7 +91,6 @@ contract DeployMoonphasePermissionModule is Script {
     }
 }
 
-// 0x49436F4956E80D9e27826ec6e43f06b9a4E54C69
 contract DeployERC20 is Script {
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
@@ -105,7 +101,6 @@ contract DeployERC20 is Script {
     }
 }
 
-// 0x00aE9e627E3601928cc793De95923346564aC62C
 contract DeployERC721 is Script {
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
@@ -116,7 +111,6 @@ contract DeployERC721 is Script {
     }
 }
 
-// 0xe2874972fE163A86f08a4C25E6d41845487397D9
 contract DeployERC1155 is Script {
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");

@@ -63,4 +63,16 @@ contract MoonInteractionTest is Test {
         uint256 gasUsed = gasStart - gasleft();
         assertGt(gasUsed, 2_000_000); // Should use over 2M gas
     }
+
+    function test_Withdraw() public {
+        vm.deal(address(moonInteraction), 100 ether);
+        address owner = address(this);
+        uint256 balance = address(moonInteraction).balance;
+
+        vm.expectEmit(true, true, true, true);
+        emit MoonInteraction.Withdraw(owner, balance);
+        moonInteraction.withdraw();
+    }
+
+    receive() external payable {}
 }

@@ -49,6 +49,7 @@ export const lunarPhases: LunarPhaseInterface[] = [
   }
 ]
 
+// Only use this on
 export const SYNDICATE_EXO = {
   id: 5_113,
   name: "Syndicate Exo",
@@ -56,14 +57,10 @@ export const SYNDICATE_EXO = {
   nativeCurrency: { name: "SYND", symbol: "SYND", decimals: 18 },
   rpcUrls: {
     default: {
-      http: [
-        "https://syndicate-exo.g.alchemy.com/v2/WNREj56kfQb9Rbz9BVEcTBBrHA7zMPqb"
-      ]
+      http: [process.env.EXO_RPC]
     },
     public: {
-      http: [
-        "https://syndicate-exo.g.alchemy.com/v2/WNREj56kfQb9Rbz9BVEcTBBrHA7zMPqb"
-      ]
+      http: [process.env.EXO_RPC]
     }
   },
   blockExplorers: {
@@ -101,7 +98,7 @@ export const SELENE_CHAIN = {
 }
 
 export const MOONPHASE_PERMISSION_MODULE =
-  "0xA0E8Ee80b1Ae18Cd2aFC844502B72abC7f0EEA8D"
+  "0x255a995685FAf63FE69c60Edd3e414DA3CB8fe7d"
 
 export const MOONPHASE_INTERACTION_CONTRACT =
   "0x268e0A6c79107f74Cf5Ef3067C110952e9127843"

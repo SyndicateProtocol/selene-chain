@@ -71,3 +71,6 @@ export const SELENE_CHAIN = {
     }
   }
 }
+
+export const MOONPHASE_PERMISSION_MODULE =
+  "0xA0E8Ee80b1Ae18Cd2aFC844502B72abC7f0EEA8D"

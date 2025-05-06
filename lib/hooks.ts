@@ -6,7 +6,11 @@ import {
 } from "@/components/MoonPhaseProvider"
 import { useContext } from "react"
 import { useState } from "react"
-import { MOONPHASE_INTERACTION_CONTRACT, lunarPreferences } from "./constants"
+import {
+  MOONPHASE_INTERACTION_CONTRACT,
+  MOONPHASE_MINT_CONTRACT,
+  lunarPreferences
+} from "./constants"
 
 export function useMoonPhase(): MoonPhase {
   const context = useContext(MoonPhaseContext)
@@ -39,8 +43,11 @@ export function useLunarTransaction() {
     setError(null)
 
     try {
+      const contractAddress = functionSignature.includes("mint")
+        ? MOONPHASE_MINT_CONTRACT
+        : MOONPHASE_INTERACTION_CONTRACT
       const payload: TransactionPayload = {
-        contractAddress: MOONPHASE_INTERACTION_CONTRACT,
+        contractAddress,
         chainId: 63888,
         functionSignature,
         args

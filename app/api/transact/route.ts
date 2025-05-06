@@ -32,7 +32,6 @@ export async function POST(request: Request) {
       )
     }
 
-    // Return the success response
     return NextResponse.json(responseData)
   } catch (error) {
     console.error("Transaction error:", error)

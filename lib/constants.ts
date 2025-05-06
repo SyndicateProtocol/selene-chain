@@ -49,6 +49,32 @@ export const lunarPhases: LunarPhaseInterface[] = [
   }
 ]
 
+export const SYNDICATE_EXO = {
+  id: 5_113,
+  name: "Syndicate Exo",
+  network: "syndicate-exo",
+  nativeCurrency: { name: "SYND", symbol: "SYND", decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: [
+        "https://syndicate-exo.g.alchemy.com/v2/WNREj56kfQb9Rbz9BVEcTBBrHA7zMPqb"
+      ]
+    },
+    public: {
+      http: [
+        "https://syndicate-exo.g.alchemy.com/v2/WNREj56kfQb9Rbz9BVEcTBBrHA7zMPqb"
+      ]
+    }
+  },
+  blockExplorers: {
+    default: {
+      name: "Syndicate Exo Explorer",
+      url: "https://syndicate-exo.explorer.alchemy.com/"
+    }
+  },
+  testnet: true
+}
+
 export const SELENE_CHAIN = {
   id: 63_888,
   name: "Selene",
@@ -76,6 +102,9 @@ export const SELENE_CHAIN = {
 
 export const MOONPHASE_PERMISSION_MODULE =
   "0xA0E8Ee80b1Ae18Cd2aFC844502B72abC7f0EEA8D"
+
+export const MOONPHASE_INTERACTION_CONTRACT =
+  "0x268e0A6c79107f74Cf5Ef3067C110952e9127843"
 
 export const lunarPreferences: Record<MoonPhase, string> = {
   "New Moon": "lowCalldata",

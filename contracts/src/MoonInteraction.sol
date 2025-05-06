@@ -41,7 +41,7 @@ contract MoonInteraction is Ownable {
 
     /// @notice Emits the FirstQuarter event
     /// @param to The address to emit
-    function firstQuarter(address to) public {
+    function firstQuarter(address to) public payable {
         angel.mint(to, 0);
         emit FirstQuarter(to);
     }

@@ -17,12 +17,12 @@ contract MoonphasePermissionModuleScript is Script {
     Angel721 internal angel;
 
     address internal allowedContract;
+    address internal owner = 0x9334297A9c1B3c5cf96f8821385a629aC64AF154;
 
     function setUp() public {}
 
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
-        address owner = vm.addr(privateKey);
 
         vm.startBroadcast(privateKey);
         angel = new Angel721("https://metadata.syndicate.io/63888/0x0000000000000000000000000000000000000000/", owner);
@@ -42,9 +42,10 @@ contract MoonphasePermissionModuleScript is Script {
 }
 
 contract DeployAngel721 is Script {
+    address internal owner = 0x9334297A9c1B3c5cf96f8821385a629aC64AF154;
+
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
-        address owner = vm.addr(privateKey);
         vm.startBroadcast(privateKey);
         Angel721 angel =
             new Angel721("https://metadata.syndicate.io/63888/0x0000000000000000000000000000000000000000/", owner);
@@ -54,10 +55,12 @@ contract DeployAngel721 is Script {
 }
 
 contract UpdateAngel721BaseURI is Script {
+    address internal angel721Address = 0x9cecA064CaB740E5F511b426c7dBD7820795fe13;
+
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
-        Angel721 angel = Angel721(0x9cecA064CaB740E5F511b426c7dBD7820795fe13);
+        Angel721 angel = Angel721(angel721Address);
         string memory base = "https://metadata.syndicate.io/63888/";
         string memory hexAddress = Strings.toHexString(address(angel)); // includes '0x' prefix
         string memory fullURI = string(abi.encodePacked(base, hexAddress, "/"));
@@ -68,24 +71,26 @@ contract UpdateAngel721BaseURI is Script {
 }
 
 contract DeployMoonInteraction is Script {
+    address internal angel721Address = 0x9cecA064CaB740E5F511b426c7dBD7820795fe13;
+    address internal owner = 0x9334297A9c1B3c5cf96f8821385a629aC64AF154;
+
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
-        address owner = vm.addr(privateKey);
         vm.startBroadcast(privateKey);
-        MoonInteraction moonInteraction =
-            new MoonInteraction(address(0x9cecA064CaB740E5F511b426c7dBD7820795fe13), owner);
+        MoonInteraction moonInteraction = new MoonInteraction(angel721Address, owner);
         console.log("MoonInteraction:", address(moonInteraction));
         vm.stopBroadcast();
     }
 }
 
 contract DeployMoonphasePermissionModule is Script {
+    address internal allowedContract = 0x75020317574aB0003A0D8B30F795c42b97d566F8;
+    address internal owner = 0x9334297A9c1B3c5cf96f8821385a629aC64AF154;
+
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
-        MoonphasePermissionModule moonphasePermissionModule = new MoonphasePermissionModule(
-            address(0x268e0A6c79107f74Cf5Ef3067C110952e9127843), address(0x9334297A9c1B3c5cf96f8821385a629aC64AF154)
-        );
+        MoonphasePermissionModule moonphasePermissionModule = new MoonphasePermissionModule(allowedContract, owner);
         console.log("MoonphasePermissionModule:", address(moonphasePermissionModule));
         vm.stopBroadcast();
     }
@@ -102,20 +107,24 @@ contract DeployERC20 is Script {
 }
 
 contract DeployERC721 is Script {
+    address internal owner = 0x9334297A9c1B3c5cf96f8821385a629aC64AF154;
+
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
-        ERC721 erc721 = new ERC721("ARTEMIS", "ARTEMIS", address(0x9334297A9c1B3c5cf96f8821385a629aC64AF154));
+        ERC721 erc721 = new ERC721("ARTEMIS", "ARTEMIS", owner);
         console.log("ERC721:", address(erc721));
         vm.stopBroadcast();
     }
 }
 
 contract DeployERC1155 is Script {
+    address internal owner = 0x9334297A9c1B3c5cf96f8821385a629aC64AF154;
+
     function run() public {
         uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
-        ERC1155 erc1155 = new ERC1155("HECATE", address(0x9334297A9c1B3c5cf96f8821385a629aC64AF154));
+        ERC1155 erc1155 = new ERC1155("HECATE", owner);
         console.log("ERC1155:", address(erc1155));
         vm.stopBroadcast();
     }

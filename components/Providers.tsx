@@ -1,4 +1,8 @@
 "use client"
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 import { type ReactNode, createContext } from 'react';
 
 export type MoonPhase = "New Moon" | "Waxing Crescent" | "First Quarter" | "Waxing Gibbous" |
@@ -14,15 +18,19 @@ const defaultValue: MoonPhaseData = {
 
 export const MoonPhaseContext = createContext<MoonPhaseData>(defaultValue);
 
-interface MoonPhaseProviderProps {
+interface ProvidersProps {
   children: ReactNode;
   value: MoonPhaseData;
 }
 
-export function MoonPhaseProvider({ children, value }: MoonPhaseProviderProps) {
+const queryClient = new QueryClient()
+
+export function Providers({ children, value }: ProvidersProps) {
   return (
     <MoonPhaseContext.Provider value={value}>
-      {children}
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
     </MoonPhaseContext.Provider>
   );
 }

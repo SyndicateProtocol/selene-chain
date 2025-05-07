@@ -1,6 +1,10 @@
+import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from "next"
 import { Geist, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
+import { MoonPhaseProvider } from "@/components/MoonPhaseProvider"
+import { getMoonPhaseData } from "@/lib/utils"
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,17 +21,24 @@ export const metadata: Metadata = {
   description: "Decentralized onchain transactions sequenced by lunar phases"
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
+
+  const moonPhaseData = await getMoonPhaseData();
+
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${jetBrainsMono.variable} antialiased`}
       >
-        {children}
+        <MoonPhaseProvider value={moonPhaseData}>
+          {children}
+        </MoonPhaseProvider>
+        <Analytics />
       </body>
     </html>
   )

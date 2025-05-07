@@ -6,198 +6,334 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "@/components/Accordion"
-import useLunarPhase from "@/lib/hooks"
+import { lunarPreferences } from "@/lib/constants"
+import { useLunarTransaction, useMoonPhase } from "@/lib/hooks"
+
 import { useEffect, useState } from "react"
 import { codeToHtml } from "shiki"
 
+const TRANSACTION_TYPES = [
+  "lowCalldata",
+  "contractCall",
+  "angelNumber",
+  "waxingGibbous",
+  "tokenTransfer",
+  "highGas",
+  "balancedGas",
+  "lowValue"
+] as const;
+
+type TransactionType = typeof TRANSACTION_TYPES[number];
+
+interface TransactionConfig {
+  functionSignature: string;
+  args: Record<string, any>;
+  value?: string;
+}
+
+interface TransactionInfo {
+  description: string;
+  code: string;
+  config: TransactionConfig;
+  label: string;
+}
+
 export default function HowTo() {
   const [highlightedCodes, setHighlightedCodes] = useState<{
-    [key: string]: string
+    [key in TransactionType]?: string
   }>({})
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [selectedTransaction, setSelectedTransaction] = useState<string | null>(
-    null
-  )
+  const [selectedTransaction, setSelectedTransaction] = useState<TransactionType | null>(null)
   const [feedback, setFeedback] = useState<string | null>(null)
+  const [successfulTx, setSuccessfulTx] = useState<TransactionType | null>(null)
+  const [cooldownTx, setCooldownTx] = useState<TransactionType | null>(null)
 
-  const currentPhase = useLunarPhase();
+  const currentPhase = useMoonPhase();
+  const {
+    sendTransaction,
+    isLoading: isTransactionLoading,
+  } = useLunarTransaction();
 
 
-  // TODO: update this once we finalize contract
-  const lunarPreferences: Record<string, string> = {
-    "New Moon": "lowCalldata",
-    "Waxing Crescent": "contractCall",
-    "First Quarter": "angelNumber",
-    "Waxing Gibbous": "waxingGibbous",
-    "Full Moon": "tokenTransfer",
-    "Waning Gibbous": "highGas",
-    "Last Quarter": "balancedGas",
-    "Waning Crescent": "lowValue"
-  }
-
-  // TODO: update this once we finalize contract
-  const codeSnippets = {
-    lowCalldata: `
-// Compress calldata to minimize transaction size
-const tx = await contract.transferMinimal("0xRecipient", {
-  data: "0x1234",  // Very small calldata
-  gasLimit: 100000
+  const transactionInfo: Record<TransactionType, TransactionInfo> = {
+    lowCalldata: {
+      description: "Efficient transactions with minimal calldata (≤ 100 bytes), optimizing for lower costs.",
+      code: `
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'newMoon',
+  args: ['0x1234'] 
 });
-    `,
-    contractCall: `
-// Call the allowed contract directly
-const tx = await moonInteraction.waxingCrescent({
-  gasLimit: 200000
+      `,
+      config: {
+        functionSignature: "newMoon(string)",
+        args: { "0": "0x1234" }
+      },
+      label: "Low calldata transaction"
+    },
+    contractCall: {
+      description: "Transactions targeting only the allowed Waxing Crescent contract call.",
+      code: `
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'waxingCrescent',
+  args: []
 });
-    `,
-    angelNumber: `
-// Send with an angel number value
-const tx = await contract.donate({
-  value: ethers.utils.parseEther("0.333"),  // Angel number
-  gasLimit: 150000
+      `,
+      config: {
+        functionSignature: "waxingCrescent()",
+        args: {}
+      },
+      label: "Waxing Crescent contract call"
+    },
+    angelNumber: {
+      description: "Transactions with angel numbers as ETH values (e.g., 0.333 ETH, 0.555 ETH).",
+      code: `
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'firstQuarter',
+  args: ['0x75020317574aB0003A0D8B30F795c42b97d566F8'], // Moon contract
+  value: BigInt(111), // Angel number: 111 wei
 });
-    `,
-    waxingGibbous: `
-// Call the specific waxingGibbous function
-const tx = await moonInteraction.waxingGibbous({
-  gasLimit: 200000
+      `,
+      config: {
+        functionSignature: "firstQuarter(address)",
+        args: { "0": "0x75020317574aB0003A0D8B30F795c42b97d566F8" },
+        value: "111" // Angel number
+      },
+      label: "Angel number donation"
+    },
+    waxingGibbous: {
+      description: "Transactions that specifically call the waxingGibbous() function.",
+      code: `
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'waxingGibbous',
+  args: [],
 });
-    `,
-    tokenTransfer: `
-// Transfer ERC20 or ERC721 tokens
-const tx = await token.transfer(
-  "0xRecipient",
-  ethers.utils.parseEther("10"),
-  { gasLimit: 150000 }
-);
-    `,
-    highGas: `
-// High gas limit transaction
-const tx = await contract.execute({
-  gasLimit: 2500000  // High gas limit ≥ 2,000,000
+      `,
+      config: {
+        functionSignature: "waxingGibbous()",
+        args: {}
+      },
+      label: "Waxing Gibbous function call"
+    },
+    tokenTransfer: {
+      description: "Transactions interacting with ERC20, ERC721, or ERC1155 token contracts.",
+      code: `
+const hash = await walletClient.writeContract({
+  address: 0x49436F4956E80D9e27826ec6e43f06b9a4E54C69, // ERC20 token contract
+  abi: ERC20Abi,
+  functionName: 'mint',
+  args: ['0x75020317574aB0003A0D8B30F795c42b97d566F8', 1000000000000000000],
 });
-    `,
-    balancedGas: `
-// Balanced gas/data transaction
-const tx = await contract.executeEfficient(data, {
-  gasLimit: 1200000,  // ≥ 1,000,000 with moderate calldata
-  data: "0x1234...5678" // ≤ 1,000 bytes
+      `,
+      config: {
+        functionSignature: "mint(address,uint256)",
+        args: { "0": "0x49436F4956E80D9e27826ec6e43f06b9a4E54C69", "1": "1" },
+      },
+      label: "Token transfer"
+    },
+    highGas: {
+      description: "Gas-heavy transactions with gas limit ≥ 2,000,000 units.",
+      code: `
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'waningGibbous',
+  args: [],
+  gas: BigInt(2500000)  // High gas limit ≥ 2,000,000
 });
-    `,
-    lowValue: `
-// Low value transaction
-const tx = await contract.send("0xRecipient", {
-  value: ethers.utils.parseEther("0.05"),  // ≤ 0.1 ETH
-  gasLimit: 100000
+      `,
+      config: {
+        functionSignature: "waningGibbous()",
+        args: {}
+      },
+      label: "High gas transaction"
+    },
+    balancedGas: {
+      description: "Balanced transactions with gas limit ≥ 1,000,000 and calldata ≤ 1,000 bytes.",
+      code: `
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'lastQuarter',
+  args: [
+    ["Message1", "Message2"], 
+    ["0xRecipient1", "0xRecipient2"] 
+  ],
+  gas: BigInt(1200000)  // Appropriate for moderate calldata
 });
-    `
-  }
-
-  const transactionDescriptions = {
-    lowCalldata: "Efficient transactions with minimal calldata (≤ 100 bytes), optimizing for lower costs.",
-    contractCall: "Transactions targeting only the allowed MoonInteraction contract.",
-    angelNumber: "Transactions with angel numbers as ETH values (e.g., 0.333 ETH, 0.555 ETH).",
-    waxingGibbous: "Transactions that specifically call the waxingGibbous() function.",
-    tokenTransfer: "Transactions interacting with ERC20, ERC721, or ERC1155 token contracts.",
-    highGas: "Gas-heavy transactions with gas limit ≥ 2,000,000 units.",
-    balancedGas: "Balanced transactions with gas limit ≥ 1,000,000 and calldata ≤ 1,000 bytes.",
-    lowValue: "Low value transactions (≤ 0.1 ETH)."
-  }
-
-  // Decide which 3 transaction types to display based on current phase
-  const getTransactionOptions = () => {
-    const correctType = lunarPreferences[currentPhase]
-
-    // Pick 2 others that aren't the correct one :-p
-    const otherTypes = Object.keys(codeSnippets)
-      .filter(type => type !== correctType)
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 2)
-
-    return [correctType, ...otherTypes]
-  }
-
-  const transactionOptions = getTransactionOptions()
+      `,
+      config: {
+        functionSignature: "lastQuarter(string[],address[])",
+        args: {
+          "0": ["Message1", "Message2"],
+          "1": ["0x1234567890123456789012345678901234567890", "0x1234567890123456789012345678901234567890"]
+        }
+      },
+      label: "Balanced gas transaction"
+    },
+    lowValue: {
+      description: "Low value transactions (≤ 0.1 ETH).",
+      code: `
+const hash = await walletClient.writeContract({
+  address: moonPhaseContract.address,
+  abi: moonPhaseAbi,
+  functionName: 'waningCrescent',
+  args: [],
+  value: BigInt(50000000000000), // 0.00005 ETH
+});
+      `,
+      config: {
+        functionSignature: "waningCrescent()",
+        args: {},
+        value: "50000000000000" // 0.00005 ETH
+      },
+      label: "Low value transaction"
+    }
+  };
 
   useEffect(() => {
     const highlightAllCode = async () => {
       try {
-        const promises = Object.entries(codeSnippets).map(
-          async ([key, snippet]) => {
-            const html = await codeToHtml(snippet, {
-              lang: "typescript",
-              theme: "tokyo-night"
-            })
-            return [key, html]
-          }
-        )
+        const promises = TRANSACTION_TYPES.map(async (type) => {
+          const html = await codeToHtml(transactionInfo[type].code, {
+            lang: "typescript",
+            theme: "tokyo-night"
+          });
+          return [type, html];
+        });
 
-        const results = await Promise.all(promises)
-        const highlightedObject = Object.fromEntries(results)
-        setHighlightedCodes(highlightedObject)
+        const results = await Promise.all(promises);
+        setHighlightedCodes(Object.fromEntries(results));
       } catch (error) {
-        console.error("Error highlighting code:", error)
+        console.error("Error highlighting code:", error);
         // Fallback to the original code without highlighting
         const fallbackObject = Object.fromEntries(
-          Object.entries(codeSnippets).map(([key, snippet]) => [
-            key,
-            `<pre><code>${snippet}</code></pre>`
+          TRANSACTION_TYPES.map((type) => [
+            type,
+            `<pre><code>${transactionInfo[type].code}</code></pre>`
           ])
-        )
-        setHighlightedCodes(fallbackObject)
+        );
+        setHighlightedCodes(fallbackObject);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
+    };
+
+    highlightAllCode();
+  }, []);
+
+  // Set up a timer to reset successful transaction state after 10 seconds
+  useEffect(() => {
+    if (successfulTx) {
+      // Set cooldown state
+      setCooldownTx(successfulTx);
+
+      // Start a timer to clear the success state
+      const timer = setTimeout(() => {
+        setSuccessfulTx(null);
+        setTimeout(() => {
+          setCooldownTx(null);
+        }, 500);
+      }, 10000);
+
+      return () => clearTimeout(timer);
     }
+  }, [successfulTx]);
 
-    highlightAllCode()
-  }, [])
-
-  const renderCodeBlock = (key: keyof typeof codeSnippets) => {
+  const renderCodeBlock = (type: TransactionType) => {
     if (isLoading) {
-      return <code className="block my-2 text-[10px]">{codeSnippets[key]}</code>
+      return <code className="block my-2 text-[10px]">{transactionInfo[type].code}</code>;
     }
 
     return (
       <div
         className="block my-2 text-[10px]"
-        dangerouslySetInnerHTML={{ __html: highlightedCodes[key] }}
+        dangerouslySetInnerHTML={{ __html: highlightedCodes[type] || "" }}
       />
-    )
-  }
+    );
+  };
 
-  const handleRunTransaction = (transactionType: string) => {
-    setSelectedTransaction(transactionType)
+  const handleRunTransaction = async (type: TransactionType) => {
+    setSelectedTransaction(type);
+    setFeedback(null);
+    setSuccessfulTx(null);
 
-    const preferredType = lunarPreferences[currentPhase] || "highGas"
+    const preferredType = lunarPreferences[currentPhase] || "highGas";
+    const isPreferred = type === preferredType;
 
-    if (transactionType === preferredType) {
+    try {
+      // Get the transaction configuration
+      const config = transactionInfo[type].config;
+
+      // Send the transaction using our hook
+      const result = await sendTransaction(
+        config.functionSignature,
+        config.args,
+        {
+          value: config.value,
+        }
+      );
+
+      setSuccessfulTx(type);
+      setSelectedTransaction(null);
+
+
+      if (isPreferred) {
+        setFeedback(
+          `✨ Great choice! The ${currentPhase} favors this type of transaction. Your transaction is being processed with priority.`
+        );
+      } else {
+        setFeedback(
+          `⚠️ This transaction is not optimal during the ${currentPhase}. The sequencer won't process it. Try another type!`
+        );
+      }
+
+    } catch (err) {
       setFeedback(
-        `✨ Great choice! The ${currentPhase} favors this type of transaction. Your transaction is being processed with priority.`
-      )
+        `❌ Transaction failed: ${err instanceof Error ? err.message : "Unknown error"}`
+      );
+      // Set selectedTransaction to null so failed transactions can be retried immediately
+      setSelectedTransaction(null);
+    }
+  };
+
+  const getButtonText = (type: TransactionType) => {
+    if (selectedTransaction === type) {
+      return "Processing...";
+    } else if (successfulTx === type) {
+      return "Transaction sent ✓";
+    } else if (cooldownTx === type) {
+      return "Please wait...";
+    } else if (isTransactionLoading) {
+      return "Please wait...";
     } else {
-      setFeedback(
-        `⚠️ This transaction might not be optimal during the ${currentPhase}. The sequencer might delay processing it.`
-      )
+      return "Execute transaction →";
     }
+  };
 
-    // TODO: integrate transaction cloud
-  }
-
-  // TODO: update this once we finalize contract
-  const getTransactionLabel = (type: string) => {
-    switch (type) {
-      case "lowCalldata": return "Low calldata transaction";
-      case "contractCall": return "Contract call";
-      case "angelNumber": return "Angel number donation";
-      case "waxingGibbous": return "Waxing Gibbous function call";
-      case "tokenTransfer": return "Token transfer";
-      case "highGas": return "High gas transaction";
-      case "balancedGas": return "Balanced gas transaction";
-      case "lowValue": return "Low value transaction";
-      default: return type;
+  const getButtonStyle = (type: TransactionType) => {
+    if (selectedTransaction === type) {
+      return "bg-gray-600";
+    } else if (cooldownTx === type || isTransactionLoading || (selectedTransaction !== null && selectedTransaction !== type)) {
+      return "bg-gray-500 cursor-not-allowed";
+    } else {
+      return "bg-black hover:bg-gray-800";
     }
-  }
+  };
+
+
+  const isButtonDisabled = (type: TransactionType) => {
+    return isTransactionLoading ||
+      (selectedTransaction !== null && selectedTransaction !== type) ||
+      cooldownTx === type;
+  };
 
   return (
     <div className="p-1 bg-white/40 backdrop-blur-sm rounded-xl self-baseline max-w-full">
@@ -222,29 +358,33 @@ const tx = await contract.send("0xRecipient", {
 
         {feedback && (
           <div
-            className={`p-3 mb-4 rounded-lg ${feedback.includes("Great") ? "bg-green-100" : "bg-yellow-100"}`}
+            className={`p-3 mb-4 rounded-lg ${feedback.includes("Great")
+              ? "bg-green-100"
+              : feedback.includes("❌")
+                ? "bg-red-100"
+                : "bg-yellow-100"
+              }`}
           >
             <p className="text-sm">{feedback}</p>
           </div>
         )}
 
         <Accordion type="single" collapsible className="w-full">
-          {transactionOptions.map((type) => (
+          {TRANSACTION_TYPES.map((type) => (
             <AccordionItem key={type} value={type}>
               <AccordionTrigger className="font-medium">
-                {getTransactionLabel(type)}
+                {transactionInfo[type].label}
               </AccordionTrigger>
               <AccordionContent>
-                <p className="text-sm mb-3">{transactionDescriptions[type as keyof typeof transactionDescriptions]}</p>
-                {renderCodeBlock(type as keyof typeof codeSnippets)}
+                <p className="text-sm mb-3">{transactionInfo[type].description}</p>
+                {renderCodeBlock(type)}
                 <button
                   type="button"
                   onClick={() => handleRunTransaction(type)}
-                  className={`${selectedTransaction === type ? "bg-gray-600" : "bg-black"} px-3 py-1.5 rounded-md text-sm text-white self-center mt-2 hover:bg-gray-800 transition-colors`}
+                  disabled={isButtonDisabled(type)}
+                  className={`${getButtonStyle(type)} px-3 py-1.5 rounded-md text-sm text-white self-center mt-2 transition-colors`}
                 >
-                  {selectedTransaction === type
-                    ? "Processing..."
-                    : "Execute transaction →"}
+                  {getButtonText(type)}
                 </button>
               </AccordionContent>
             </AccordionItem>

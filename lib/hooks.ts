@@ -1,17 +1,103 @@
+"use client"
+
+import {
+  type MoonPhase,
+  MoonPhaseContext
+} from "@/components/MoonPhaseProvider"
+import { useContext } from "react"
 import { useState } from "react"
+import {
+  MOONPHASE_INTERACTION_CONTRACT,
+  MOONPHASE_MINT_CONTRACT,
+  lunarPreferences
+} from "./constants"
 
-export type LunarPhase =
-  | "New Moon"
-  | "Waxing Crescent"
-  | "First Quarter"
-  | "Waxing Gibbous"
-  | "Full Moon"
-  | "Waning Gibbous"
-  | "Last Quarter"
-  | "Waning Crescent"
+export function useMoonPhase(): MoonPhase {
+  const context = useContext(MoonPhaseContext)
+  return context.moonPhase
+}
 
-export default function useLunarPhase(): LunarPhase {
-  const [phase] = useState<LunarPhase>("Waning Gibbous")
-  // In the future, this hook will fetch the actual lunar phase from the contract
-  return phase
+interface TransactionPayload {
+  contractAddress: string
+  chainId: number
+  functionSignature: string
+  args: Record<string, any>
+  value?: string
+}
+
+export function useLunarTransaction() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [transactionResult, setTransactionResult] = useState<any | null>(null)
+
+  const currentPhase = useMoonPhase()
+
+  const sendTransaction = async (
+    functionSignature: string,
+    args: Record<string, any>,
+    options?: {
+      value?: string
+    }
+  ) => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const contractAddress = functionSignature.includes("mint")
+        ? MOONPHASE_MINT_CONTRACT
+        : MOONPHASE_INTERACTION_CONTRACT
+      const payload: TransactionPayload = {
+        contractAddress,
+        chainId: 63888,
+        functionSignature,
+        args
+      }
+
+      if (options?.value) {
+        payload.value = options.value
+      }
+
+      const response = await fetch("/api/transact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || "Transaction failed")
+      }
+
+      setTransactionResult(data)
+      return data
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Transaction failed"
+      setError(errorMessage)
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const isPreferredTransaction = (transactionType: string): boolean => {
+    return lunarPreferences[currentPhase] === transactionType
+  }
+
+  const getPreferredTransactionType = (): string => {
+    return lunarPreferences[currentPhase] || "highGas"
+  }
+
+  return {
+    sendTransaction,
+    isLoading,
+    error,
+    transactionResult,
+    currentPhase,
+    isPreferredTransaction,
+    getPreferredTransactionType
+  }
 }

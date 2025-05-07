@@ -15,6 +15,9 @@
       },
       "a11y": {
         "noSvgWithoutTitle": "off"
+      },
+      "style": {
+        "noUselessElse": "off"
       }
     }
   },

@@ -1,3 +1,5 @@
+import type { MoonPhase } from "@/components/MoonPhaseProvider"
+
 export interface LunarPhaseInterface {
   name: string
   symbol: string
@@ -13,39 +15,64 @@ export const lunarPhases: LunarPhaseInterface[] = [
   {
     name: "Waxing Crescent",
     symbol: "D",
-    priority: "Prioritizes contract deployments"
+    priority: "Can only broadcast to allowed contract"
   },
   {
     name: "First Quarter",
     symbol: "G",
-    priority: "FIFO"
+    priority: "Must send angel number donation in all transactions"
   },
   {
     name: "Waxing Gibbous",
     symbol: "J",
-    priority: "Prioritizes batch transactions"
+    priority:
+      "Can only send transactions with waxingGibbous() function signature"
   },
   {
     name: "Full",
     symbol: "N",
-    priority: "Prioritizes transactions interacting with token contracts"
+    priority: "Can only interact with token contracts"
   },
   {
     name: "Waning Gibbous",
     symbol: "R",
-    priority: "Prioritizes higher gas limits"
+    priority: "Gas limit must be >2M gas"
   },
   {
     name: "Last Quarter",
     symbol: "U",
-    priority: "Prioritizes gas-efficient transactions"
+    priority: "Gas limit to calldata ratio must be >= 16"
   },
   {
     name: "Waning Crescent",
     symbol: "X",
-    priority: "Prioritizes gas-efficient transactions"
+    priority: "Can only send transactions with value <= 0.01 ETH"
   }
 ]
+
+const EXO_RPC_URL =
+  process.env.EXO_RPC || "https://syndicate-exo.g.alchemy.com/v2"
+export const SYNDICATE_EXO = {
+  id: 5_113,
+  name: "Syndicate Exo",
+  network: "syndicate-exo",
+  nativeCurrency: { name: "SYND", symbol: "SYND", decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: [EXO_RPC_URL] as readonly string[]
+    },
+    public: {
+      http: [EXO_RPC_URL] as readonly string[]
+    }
+  },
+  blockExplorers: {
+    default: {
+      name: "Syndicate Exo Explorer",
+      url: "https://syndicate-exo.explorer.alchemy.com/"
+    }
+  },
+  testnet: true
+}
 
 export const SELENE_CHAIN = {
   id: 63_888,
@@ -70,4 +97,24 @@ export const SELENE_CHAIN = {
       url: "https://selene.explorer.testnet.syndicate.io"
     }
   }
+}
+
+export const MOONPHASE_PERMISSION_MODULE =
+  "0x255a995685FAf63FE69c60Edd3e414DA3CB8fe7d"
+
+export const MOONPHASE_INTERACTION_CONTRACT =
+  "0xf2921AF55D7d01d1441c58F3EfA9EcE1f405FBC2"
+
+export const MOONPHASE_MINT_CONTRACT =
+  "0x49436F4956E80D9e27826ec6e43f06b9a4E54C69"
+
+export const lunarPreferences: Record<MoonPhase, string> = {
+  "New Moon": "lowCalldata",
+  "Waxing Crescent": "contractCall",
+  "First Quarter": "angelNumber",
+  "Waxing Gibbous": "waxingGibbous",
+  "Full Moon": "tokenTransfer",
+  "Waning Gibbous": "highGas",
+  "Last Quarter": "balancedGas",
+  "Waning Crescent": "lowValue"
 }

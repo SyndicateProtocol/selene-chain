@@ -1,4 +1,4 @@
-import type { MoonPhase } from "@/components/MoonPhaseProvider"
+import type { MoonPhase } from "@/components/Providers"
 
 export interface LunarPhaseInterface {
   name: string

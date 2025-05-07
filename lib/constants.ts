@@ -111,6 +111,8 @@ export const MOONPHASE_MINT_CONTRACT =
 export const BLOCK_EXPLORER_URL =
   "https://selene.explorer.testnet.syndicate.io/"
 
+export const DASHBOARD_PROJECT_ID = "74093453-7cc7-45a2-8bfc-2c186531858c"
+
 export const lunarPreferences: Record<MoonPhase, string> = {
   "New Moon": "lowCalldata",
   "Waxing Crescent": "contractCall",

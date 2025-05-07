@@ -1,9 +1,10 @@
-import type { MoonPhaseData } from "@/components/MoonPhaseProvider"
+import type { MoonPhaseData } from "@/components/Providers"
 import { MOONPHASE_PERMISSION_MODULE, SYNDICATE_EXO } from "@/lib/constants"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { http, createPublicClient, getContract } from "viem"
 import type { LunarPhaseInterface } from "./constants"
+import type { Transaction } from "./hooks"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -63,4 +64,23 @@ export async function getMoonPhaseData(): Promise<MoonPhaseData> {
       moonPhase: "New Moon"
     }
   }
+}
+
+export const getTransactionHash = (tx: Transaction): string => {
+  if (tx.hash) return tx.hash
+
+  if (tx.transactionAttempts && tx.transactionAttempts.length > 0) {
+    const attemptWithHash = tx.transactionAttempts.find(
+      (attempt) => attempt?.hash
+    )
+    if (attemptWithHash?.hash) {
+      return attemptWithHash.hash
+    }
+  }
+  return tx.transactionId || tx.id || "Unknown"
+}
+
+export const getBlockExplorerUrl = (tx: Transaction): string => {
+  const hash = getTransactionHash(tx)
+  return `https://selene.explorer.testnet.syndicate.io/tx/${hash}`
 }

@@ -2,7 +2,7 @@ import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from "next"
 import { Geist, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
-import { MoonPhaseProvider } from "@/components/MoonPhaseProvider"
+import { Providers } from "@/components/Providers"
 import { getMoonPhaseData } from "@/lib/utils"
 
 
@@ -35,9 +35,9 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${jetBrainsMono.variable} antialiased`}
       >
-        <MoonPhaseProvider value={moonPhaseData}>
+        <Providers value={moonPhaseData}>
           {children}
-        </MoonPhaseProvider>
+        </Providers>
         <Analytics />
       </body>
     </html>

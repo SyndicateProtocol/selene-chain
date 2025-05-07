@@ -1,9 +1,7 @@
 "use client"
 
-import {
-  type MoonPhase,
-  MoonPhaseContext
-} from "@/components/MoonPhaseProvider"
+import { type MoonPhase, MoonPhaseContext } from "@/components/Providers"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useContext } from "react"
 import { useState } from "react"
 import {
@@ -25,7 +23,7 @@ interface TransactionPayload {
   value?: string
 }
 
-export function useLunarTransaction() {
+export function useSendTransaction() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [transactionResult, setTransactionResult] = useState<any | null>(null)
@@ -99,5 +97,45 @@ export function useLunarTransaction() {
     currentPhase,
     isPreferredTransaction,
     getPreferredTransactionType
+  }
+}
+
+export type Transaction = {
+  transactionId: string
+  id: string
+  hash: string
+  contractAddress: string
+  createdAt: string
+  status: string
+  invalid: boolean
+  functionSignature: string
+  transactionAttempts?: Array<{
+    hash?: string
+    status?: string
+  }>
+}
+const fetchTransactions = async (): Promise<Transaction[]> => {
+  const response = await fetch("/api/requests-by-project")
+  const data = await response.json()
+
+  if (!response.ok || data.error) {
+    throw new Error(data.error || `HTTP error: ${response.status}`)
+  }
+
+  return data.requests || []
+}
+
+export function useTransactions() {
+  return useQuery({
+    queryKey: ["transactions"],
+    queryFn: fetchTransactions
+  })
+}
+
+export function useRefreshTransactions() {
+  const queryClient = useQueryClient()
+
+  return () => {
+    return queryClient.invalidateQueries({ queryKey: ["transactions"] })
   }
 }

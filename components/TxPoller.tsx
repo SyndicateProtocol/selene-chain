@@ -1,23 +1,13 @@
 "use client"
 
+import { useTransactions } from "@/lib/hooks";
+import { getBlockExplorerUrl, getTransactionHash } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns"
-import { Clock, Fuel, Hash } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
-import type { Transaction } from "viem"
+import { ArrowUpRight, Clock, Code, Hash } from "lucide-react"
 
-
-type ExtendedTransaction = Transaction & {
-  blockTimestamp?: string | bigint
-}
-
-
-function formatTimestamp(timestamp: string | bigint): string {
+function formatTimestamp(timestamp: string): string {
   try {
-    const timestampNum = typeof timestamp === 'string'
-      ? Number.parseInt(timestamp)
-      : Number(timestamp);
-
-    const date = new Date(timestampNum * 1000);
+    const date = new Date(timestamp);
     return formatDistanceToNow(date, { addSuffix: true });
   } catch (error) {
     console.error("Error formatting timestamp:", error);
@@ -26,96 +16,12 @@ function formatTimestamp(timestamp: string | bigint): string {
 }
 
 export default function TxPoller() {
-  const [transactions, setTransactions] = useState<ExtendedTransaction[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [blockNumber, setBlockNumber] = useState<string | null>(null)
-  const pollingInterval = 15000 // 15s
-
-  // Fetch initial transactions with historical data
-  const fetchInitialTransactions = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      // Request historical transactions with the minimum count
-      const response = await fetch("/api/latest-block?historical=true")
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`)
-      }
-      const data = await response.json()
-      if (data.error) {
-        throw new Error(data.error)
-      }
-
-      setBlockNumber(data.blockNumber)
-
-      // Initialize transactions with historical data
-      if (data.historicalTransactions && Array.isArray(data.historicalTransactions)) {
-        setTransactions(data.historicalTransactions as Transaction[])
-      }
-
-      setError(null)
-      setIsLoading(false)
-    } catch (error) {
-      console.error("Error fetching initial transactions:", error)
-      setError("Failed to fetch blockchain data")
-      setIsLoading(false)
-    }
-  }, [])
-
-  // Fetch latest block for polling updates
-  const fetchLatestBlock = useCallback(async () => {
-    try {
-      const response = await fetch("/api/latest-block")
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`)
-      }
-      const data = await response.json()
-      if (data.error) {
-        throw new Error(data.error)
-      }
-      // If already on the latest block, do nothing
-      if (data.blockNumber === blockNumber) {
-        return
-      }
-
-      setBlockNumber(data.blockNumber)
-      if (data.transactionsWithTimestamps && Array.isArray(data.transactionsWithTimestamps)) {
-        setTransactions((prev) => {
-          const newTxs = data.transactionsWithTimestamps as Transaction[]
-          const updated = [...newTxs, ...prev]
-          return updated.slice(0, 50) // Keep only the latest 50 txs
-        })
-      }
-      setError(null)
-      setIsLoading(false)
-    } catch (error) {
-      console.error("Error fetching latest block:", error)
-      setError("Failed to fetch latest block")
-      setIsLoading(false)
-    }
-  }, [blockNumber])
-
-  // Initial fetch with historical data
-  useEffect(() => {
-    fetchInitialTransactions()
-  }, [fetchInitialTransactions])
-
-  // Set up polling for new blocks
-  useEffect(() => {
-    if (!blockNumber) {
-      return
-    }
-
-    // Set up polling interval
-    const interval = setInterval(fetchLatestBlock, pollingInterval)
-
-    // Cleanup
-    return () => {
-      clearInterval(interval)
-    }
-  }, [fetchLatestBlock, blockNumber])
-
-
+  const {
+    data: transactions,
+    isLoading,
+    isError,
+    error
+  } = useTransactions();
 
   return (
     <section className="w-full basis-full">
@@ -123,58 +29,69 @@ export default function TxPoller() {
         <h2 className="text-xl font-semibold">Latest Transactions</h2>
       </div>
       {isLoading && (
-        <div className="bg-white/40 backdrop-blur-sm rounded-xl p-6 flex justify-center items-center h-40">
+        <div className="bg-white/40 border border-gray-light backdrop-blur-sm rounded-xl p-6 flex justify-center items-center h-40">
           <div className="flex flex-col items-center gap-2">
-            <div className="h-5 w-5 border-2 border-t-transparent border-black/30  rounded-full animate-spin" />
-
+            <div className="h-5 w-5 border-2 border-t-transparent border-black/30 rounded-full animate-spin" />
             <p className="text-sm text-black/70">Fetching transactions...</p>
           </div>
         </div>
       )}
 
-      {error && (
+      {isError && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-          <p className="text-red-600">{error}</p>
+          <p className="text-red-600">
+            <strong>Error:</strong> {error.message}
+          </p>
         </div>
       )}
 
-      {!isLoading && !error && (
-        <div className="space-y-2 overflow-y-auto max-h-[70vh]">
+      {!isLoading && !isError && transactions && (
+        <div className="space-y-2">
           {transactions.length === 0 ? (
             <div className="bg-white/40 backdrop-blur-sm rounded-xl p-6 text-center">
               <p className="text-black/70">No transactions found</p>
             </div>
           ) : (
-            transactions.map((tx) => (
+            transactions.map((tx, index) => (
               <div
-                key={tx.hash}
-                className="bg-white/40 backdrop-blur-sm rounded-xl p-4 transition-all"
+                key={getTransactionHash(tx) || index}
+                className={`bg-white/40 backdrop-blur-sm rounded-xl p-4 transition-all ${tx.invalid ? "border-2 border-red-500" : "border border-gray-light"
+                  }`}
               >
                 <div className="grid gap-2">
                   <div className="flex items-center gap-2 overflow-hidden">
                     <Hash className="h-4 w-4 flex-shrink-0 text-black/50" />
-                    <p
-                      className="text-xs font-mono overflow-hidden text-ellipsis"
-                      title={tx.hash as string}
+                    <a
+                      href={getBlockExplorerUrl(tx)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-mono overflow-hidden text-ellipsis hover:underline flex items-center gap-1"
+                      title={getTransactionHash(tx)}
                     >
-                      {tx.hash as string}
-                    </p>
+                      {getTransactionHash(tx)}
+                      <ArrowUpRight className="h-3 w-3" />
+                    </a>
                   </div>
-
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-1.5 text-black/60">
-                      <Fuel className="h-3.5 w-3.5" />
-                      <span>
-                        {tx.gas ? Number(tx.gas).toLocaleString() : "N/A"} gas
-                      </span>
+                  {tx.functionSignature && (
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <Code className="h-4 w-4 flex-shrink-0 text-black/50" />
+                      <p className="text-xs font-mono overflow-hidden text-ellipsis">
+                        {tx.functionSignature}
+                      </p>
                     </div>
-
+                  )}
+                  <div className="flex items-center justify-between text-xs mt-1">
+                    <div>
+                      {tx.invalid && (
+                        <span className="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded-full">
+                          Failed
+                        </span>
+                      )}
+                    </div>
                     <div className="flex items-center gap-1.5 text-black/60">
                       <Clock className="h-3.5 w-3.5" />
                       <span>
-                        {tx.blockTimestamp
-                          ? formatTimestamp(tx.blockTimestamp)
-                          : "Just now"}
+                        {tx.createdAt ? formatTimestamp(tx.createdAt) : "Just now"}
                       </span>
                     </div>
                   </div>
@@ -185,5 +102,5 @@ export default function TxPoller() {
         </div>
       )}
     </section>
-  )
+  );
 }

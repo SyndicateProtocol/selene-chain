@@ -1,4 +1,4 @@
-import type { MoonPhase } from "@/components/MoonPhaseProvider"
+import type { MoonPhase } from "@/components/Providers"
 
 export interface LunarPhaseInterface {
   name: string
@@ -107,6 +107,11 @@ export const MOONPHASE_INTERACTION_CONTRACT =
 
 export const MOONPHASE_MINT_CONTRACT =
   "0x49436F4956E80D9e27826ec6e43f06b9a4E54C69"
+
+export const BLOCK_EXPLORER_URL =
+  "https://selene.explorer.testnet.syndicate.io/"
+
+export const DASHBOARD_PROJECT_ID = "74093453-7cc7-45a2-8bfc-2c186531858c"
 
 export const lunarPreferences: Record<MoonPhase, string> = {
   "New Moon": "lowCalldata",

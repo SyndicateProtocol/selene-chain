@@ -7,9 +7,9 @@ import {
   AccordionTrigger
 } from "@/components/Accordion"
 import { lunarPreferences } from "@/lib/constants"
-import { useLunarTransaction, useMoonPhase } from "@/lib/hooks"
+import { useMoonPhase, useRefreshTransactions, useSendTransaction } from "@/lib/hooks"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { codeToHtml } from "shiki"
 
 const TRANSACTION_TYPES = [
@@ -52,10 +52,12 @@ export default function HowTo() {
   const {
     sendTransaction,
     isLoading: isTransactionLoading,
-  } = useLunarTransaction();
+  } = useSendTransaction();
+
+  const refreshTransactions = useRefreshTransactions();
 
 
-  const transactionInfo: Record<TransactionType, TransactionInfo> = {
+  const transactionInfo = useMemo<Record<TransactionType, TransactionInfo>>(() => ({
     lowCalldata: {
       description: "Efficient transactions with minimal calldata (≤ 100 bytes), optimizing for lower costs.",
       code: `
@@ -196,8 +198,10 @@ const hash = await walletClient.writeContract({
       },
       label: "Low value transaction"
     }
-  };
+  }), []);
 
+
+  // Highlight all code blocks
   useEffect(() => {
     const highlightAllCode = async () => {
       try {
@@ -227,9 +231,9 @@ const hash = await walletClient.writeContract({
     };
 
     highlightAllCode();
-  }, []);
+  }, [transactionInfo]);
 
-  // Set up a timer to reset successful transaction state after 10 seconds
+  // Reset successful transaction state after timeout
   useEffect(() => {
     if (successfulTx) {
       // Set cooldown state
@@ -247,7 +251,8 @@ const hash = await walletClient.writeContract({
     }
   }, [successfulTx]);
 
-  const renderCodeBlock = (type: TransactionType) => {
+
+  const renderCodeBlock = useCallback((type: TransactionType) => {
     if (isLoading) {
       return <code className="block my-2 text-[10px]">{transactionInfo[type].code}</code>;
     }
@@ -258,22 +263,19 @@ const hash = await walletClient.writeContract({
         dangerouslySetInnerHTML={{ __html: highlightedCodes[type] || "" }}
       />
     );
-  };
+  }, [isLoading, highlightedCodes, transactionInfo]);
 
-  const handleRunTransaction = async (type: TransactionType) => {
+
+  const handleRunTransaction = useCallback(async (type: TransactionType) => {
     setSelectedTransaction(type);
     setFeedback(null);
     setSuccessfulTx(null);
 
-    const preferredType = lunarPreferences[currentPhase] || "highGas";
-    const isPreferred = type === preferredType;
+    const isPreferred = type === lunarPreferences[currentPhase];
 
     try {
-      // Get the transaction configuration
       const config = transactionInfo[type].config;
-
-      // Send the transaction using our hook
-      const result = await sendTransaction(
+      await sendTransaction(
         config.functionSignature,
         config.args,
         {
@@ -283,7 +285,7 @@ const hash = await walletClient.writeContract({
 
       setSuccessfulTx(type);
       setSelectedTransaction(null);
-
+      refreshTransactions();
 
       if (isPreferred) {
         setFeedback(
@@ -302,9 +304,10 @@ const hash = await walletClient.writeContract({
       // Set selectedTransaction to null so failed transactions can be retried immediately
       setSelectedTransaction(null);
     }
-  };
+  }, [transactionInfo, sendTransaction, currentPhase, refreshTransactions]);
 
-  const getButtonText = (type: TransactionType) => {
+
+  const getButtonText = useCallback((type: TransactionType) => {
     if (selectedTransaction === type) {
       return "Processing...";
     } else if (successfulTx === type) {
@@ -316,7 +319,7 @@ const hash = await walletClient.writeContract({
     } else {
       return "Execute transaction →";
     }
-  };
+  }, [selectedTransaction, successfulTx, cooldownTx, isTransactionLoading]);
 
   const getButtonStyle = (type: TransactionType) => {
     if (selectedTransaction === type) {
@@ -326,17 +329,22 @@ const hash = await walletClient.writeContract({
     } else {
       return "bg-black hover:bg-gray-800";
     }
-  };
-
+  }
 
   const isButtonDisabled = (type: TransactionType) => {
     return isTransactionLoading ||
       (selectedTransaction !== null && selectedTransaction !== type) ||
       cooldownTx === type;
-  };
+  }
+
+
+  const feedbackStyle = !feedback ? "" :
+    feedback.includes("Great") ? "bg-green-100" :
+      feedback.includes("❌") ? "bg-red-100" :
+        "bg-yellow-100";
 
   return (
-    <div className="p-1 bg-white/40 backdrop-blur-sm rounded-xl self-baseline max-w-full">
+    <div className="p-1 bg-white/40 border border-gray-light backdrop-blur-sm rounded-xl self-baseline max-w-full">
       <div className="p-4">
         <div className="font-medium text-2xl mb-4">
           Lunar Transaction Challenge
@@ -357,14 +365,7 @@ const hash = await walletClient.writeContract({
         </div>
 
         {feedback && (
-          <div
-            className={`p-3 mb-4 rounded-lg ${feedback.includes("Great")
-              ? "bg-green-100"
-              : feedback.includes("❌")
-                ? "bg-red-100"
-                : "bg-yellow-100"
-              }`}
-          >
+          <div className={`p-3 mb-4 rounded-lg ${feedbackStyle}`}>
             <p className="text-sm">{feedback}</p>
           </div>
         )}

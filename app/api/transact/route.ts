@@ -1,3 +1,4 @@
+import { DASHBOARD_PROJECT_ID } from "@/lib/constants"
 import { NextResponse } from "next/server"
 
 const API_KEY = process.env.DASHBOARD_API_KEY
@@ -6,7 +7,7 @@ export async function POST(request: Request) {
   try {
     const data = await request.json()
     const payload = {
-      projectId: "74093453-7cc7-45a2-8bfc-2c186531858c",
+      projectId: DASHBOARD_PROJECT_ID,
       ...data
     }
 

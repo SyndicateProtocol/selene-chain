@@ -30,7 +30,7 @@ export default function Home() {
             </h1>
           </div>
           <div className="md:col-span-2 lg:col-span-1 p-4 bg-white/40 border border-gray-light backdrop-blur-sm rounded-xl">
-            <a href={BLOCK_EXPLORER_URL} target="_blank" className="font-mono rounded-md border px-2 inline-block text-xs mb-2 hover:bg-black hover:text-white transition-colors" rel="noreferrer" >Selene chain ID: 63888 </a>
+            <a href={BLOCK_EXPLORER_URL} target="_blank" className="font-mono px-2 py-0.5 rounded-full border inline-block text-xs mb-2 hover:bg-black hover:text-white transition-colors" rel="noreferrer" >Selene chain ID: 63888 </a>
             <p className="text-sm">
               This site tracks lunar phases and transactions on Selene chain...{" "}
               <span className="bold font-medium">

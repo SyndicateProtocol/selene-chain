@@ -7,7 +7,7 @@ import {
   AccordionTrigger
 } from "@/components/Accordion"
 import { lunarPreferences } from "@/lib/constants"
-import { useLunarTransaction, useMoonPhase } from "@/lib/hooks"
+import { useMoonPhase, useSendTransaction } from "@/lib/hooks"
 
 import { useEffect, useState } from "react"
 import { codeToHtml } from "shiki"
@@ -52,7 +52,7 @@ export default function HowTo() {
   const {
     sendTransaction,
     isLoading: isTransactionLoading,
-  } = useLunarTransaction();
+  } = useSendTransaction();
 
 
   const transactionInfo: Record<TransactionType, TransactionInfo> = {

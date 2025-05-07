@@ -3,36 +3,33 @@ import { NextResponse } from "next/server"
 
 const API_KEY = process.env.DASHBOARD_API_KEY
 
-export async function POST(request: Request) {
+export async function GET() {
   try {
-    const data = await request.json()
-    const payload = {
-      projectId: DASHBOARD_PROJECT_ID,
-      ...data
-    }
-
     const endpoint = `https://api.syndicate.io/wallet/project/${DASHBOARD_PROJECT_ID}/requests`
+
     const response = await fetch(endpoint, {
-      method: "POST",
+      method: "GET",
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
+        Authorization: `Bearer ${API_KEY}`
+      }
     })
+
     const responseData = await response.json()
 
     if (!response.ok) {
       return NextResponse.json(
-        { message: responseData.message || "Transaction failed" },
+        { error: responseData.message || "Failed to fetch project requests" },
         { status: response.status }
       )
     }
-    return NextResponse.json(responseData)
+
+    return NextResponse.json({
+      requests: responseData.transactionRequests || [],
+      total: responseData.total || 0
+    })
   } catch (error) {
-    console.error("Transaction error:", error)
     return NextResponse.json(
-      { message: "Internal server error" },
+      { error: "Error processing request" },
       { status: 500 }
     )
   }

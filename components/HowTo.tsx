@@ -271,8 +271,6 @@ const hash = await walletClient.writeContract({
     setFeedback(null);
     setSuccessfulTx(null);
 
-
-
     const isPreferred = type === lunarPreferences[currentPhase] || "highGas";
 
     try {

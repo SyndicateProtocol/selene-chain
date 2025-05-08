@@ -66,7 +66,7 @@ export async function getMoonPhaseData(): Promise<MoonPhaseData> {
   }
 }
 
-export const getTransactionHash = (tx: Transaction): string => {
+export const getTransactionHash = (tx: Transaction): string | null => {
   if (tx.hash) return tx.hash
 
   if (tx.transactionAttempts && tx.transactionAttempts.length > 0) {
@@ -77,7 +77,7 @@ export const getTransactionHash = (tx: Transaction): string => {
       return attemptWithHash.hash
     }
   }
-  return tx.transactionId || tx.id || "Unknown"
+  return null
 }
 
 export const getBlockExplorerUrl = (tx: Transaction): string => {

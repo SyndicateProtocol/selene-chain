@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: lunar-db
+    environment:
+      POSTGRES_USER: lunar
+      POSTGRES_PASSWORD: lunar
+      POSTGRES_DB: lunar
+    ports:
+      - "5432:5432"
+    volumes:
+      - lunar-pg-data:/var/lib/postgresql/data
+
+volumes:
+  lunar-pg-data:

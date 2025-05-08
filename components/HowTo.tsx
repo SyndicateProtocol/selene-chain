@@ -293,7 +293,7 @@ const hash = await walletClient.writeContract({
         );
       } else {
         setFeedback(
-          `⚠️ This transaction is not optimal during the ${currentPhase}. The sequencer won't process it. Try another type!`
+          `⚠️ The ${currentPhase} sequencer does not like this transaction and will not process it. Try another!`
         );
       }
 

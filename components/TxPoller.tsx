@@ -61,7 +61,7 @@ export default function TxPoller() {
                     }`}
                 >
                   <div className="grid gap-2">
-                    {!isFailed && (
+                    {!isFailed && tx(
                       <div className="flex items-center gap-2 overflow-hidden">
                         <Hash className="h-4 w-4 flex-shrink-0 text-black/50" />
 
@@ -70,7 +70,7 @@ export default function TxPoller() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-xs font-mono overflow-hidden text-ellipsis hover:underline flex items-center gap-1"
-                          title={getTransactionHash(tx)}
+                          title={getTransactionHash(tx) ?? ""}
                         >
                           {getTransactionHash(tx)}
                           <ArrowUpRight className="h-3 w-3" />

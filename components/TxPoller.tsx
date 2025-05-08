@@ -61,7 +61,7 @@ export default function TxPoller() {
                     }`}
                 >
                   <div className="grid gap-2">
-                    {!isFailed && tx(
+                    {!isFailed && (
                       <div className="flex items-center gap-2 overflow-hidden">
                         <Hash className="h-4 w-4 flex-shrink-0 text-black/50" />
 

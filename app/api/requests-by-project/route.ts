@@ -1,3 +1,4 @@
+import { db } from "@/db"
 import { DASHBOARD_PROJECT_ID } from "@/lib/constants"
 import { NextResponse } from "next/server"
 
@@ -23,13 +24,30 @@ export async function GET() {
       )
     }
 
-    // 1. filter out all invalid requests from TC
-    // 2. query db for all invalid requests
-    // 3. merge & sort by createdAt datetime
+    const validRequests = responseData.transactionRequests.filter(
+      (request: any) => {
+        return request.invalid === false
+      }
+    )
+
+    const invalidRequests = await db.getInvalidTransactionRequests()
+
+    const mergedRequests = [
+      ...validRequests,
+      ...invalidRequests.map((r) => ({
+        ...r,
+        invalid: true,
+        transactionAttempts: []
+      }))
+    ]
+
+    const sortedRequests = mergedRequests.sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
 
     return NextResponse.json({
-      requests: responseData.transactionRequests || [],
-      total: responseData.total || 0
+      requests: sortedRequests,
+      total: sortedRequests.length
     })
   } catch (error) {
     return NextResponse.json(

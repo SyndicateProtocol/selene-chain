@@ -20,7 +20,7 @@ class Db {
   getInvalidTransactionRequests() {
     return this.pg.query.invalidTransactionRequests.findMany({
       orderBy: [desc(invalidTransactionRequests.createdAt)],
-      limit: 100
+      limit: 50
     })
   }
 }

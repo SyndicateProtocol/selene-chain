@@ -1,18 +1,26 @@
-import { eq } from "drizzle-orm"
+import { desc } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/node-postgres"
-import { transactionRequests } from "./schema"
+import { invalidTransactionRequests } from "./schema"
 class Db {
   private pg = drizzle({
     casing: "snake_case",
     connection: process.env.DATABASE_URL as string,
     schema: {
-      transactionRequests
+      invalidTransactionRequests
     }
   })
 
+  saveInvalidTransactionRequest(
+    payload: typeof invalidTransactionRequests.$inferInsert
+  ) {
+    return this.pg.insert(invalidTransactionRequests).values({
+      ...payload
+    })
+  }
   getInvalidTransactionRequests() {
-    return this.pg.query.transactionRequests.findMany({
-      where: eq(transactionRequests.invalid, true)
+    return this.pg.query.invalidTransactionRequests.findMany({
+      orderBy: [desc(invalidTransactionRequests.createdAt)],
+      limit: 100
     })
   }
 }

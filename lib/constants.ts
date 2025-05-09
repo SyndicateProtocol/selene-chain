@@ -123,3 +123,6 @@ export const lunarPreferences: Record<MoonPhase, string> = {
   "Last Quarter": "balancedGas",
   "Waning Crescent": "lowValue"
 }
+
+export const MOONPHASE_PERMISSION_MODULE_ADDRESS =
+  "0x255a995685FAf63FE69c60Edd3e414DA3CB8fe7d"

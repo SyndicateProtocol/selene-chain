@@ -1,9 +1,4 @@
-Array<{"yes": "string"}>
-
-const thing = [{yes: "no"}]
-const thingAsConst = [{ yes: "no" }] as const
-
-const MoonphasePermissionModuleAbi = [
+export const MoonphasePermissionModuleAbi = [
   {
     type: "constructor",
     inputs: [

@@ -41,31 +41,56 @@ export async function POST(request: Request) {
         }
         break
       case "Waxing Crescent":
-        if (
-          payload.contractAddress ===
-          "0xf2921af55d7d01d1441c58f3efa9ece1f405fbc2"
-        ) {
-          break
+        if (payload.functionSignature !== "waxingCrescent()") {
+          isInvalid = true
         }
         break
       case "First Quarter":
+        if (payload.functionSignature !== "firstQuarter(address") {
+          isInvalid = true
+        }
         break
       case "Waxing Gibbous":
+        if (payload.functionSignature !== "waxingGibbous()") {
+          isInvalid = true
+        }
         break
       case "Full Moon":
+        if (payload.functionSignature !== "mint(address,uint256)") {
+          isInvalid = true
+        }
         break
       case "Waning Gibbous":
+        if (payload.functionSignature !== "waningGibbous()") {
+          isInvalid = true
+        }
         break
       case "Last Quarter":
+        if (payload.functionSignature !== "lastQuarter(string[],address[])") {
+          isInvalid = true
+        }
         break
       case "Waning Crescent":
+        if (payload.functionSignature !== "waningCrescent()") {
+          isInvalid = true
+        }
         break
     }
 
     let responseData: any
     if (isInvalid) {
-      // TODO: update shape of payload to be that of invalidTransactionRequest schema
-      responseData = await db.saveInvalidTransactionRequest(payload)
+      const invalidTransactionRequest = {
+        projectId: payload.projectId,
+        contractAddress: payload.contractAddress,
+        chainId: payload.chainId,
+        functionSignature: payload.functionSignature,
+        data: payload?.data,
+        value: payload?.value
+      }
+
+      responseData = await db.saveInvalidTransactionRequest(
+        invalidTransactionRequest
+      )
       responseData.invalid = true
       responseData.transactionAttempts = []
     } else {

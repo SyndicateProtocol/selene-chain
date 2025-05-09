@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:dev": "./db/dev.sh",
+    "db:gen-migration": "drizzle-kit generate --config=./drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config=./drizzle.config.ts",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down -v --remove-orphans",
+    "db:status": "docker ps -f name=lunar-db"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.8",
@@ -17,8 +23,11 @@
     "@vercel/analytics": "^1.5.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.43.1",
     "lucide-react": "^0.503.0",
     "next": "15.3.0",
+    "pg": "^8.15.6",
     "postprocessing": "^6.37.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -31,9 +40,12 @@
     "@biomejs/biome": "1.9.4",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.15.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.1",
     "tailwindcss": "^4",
+    "tsx": "^4.19.4",
     "typescript": "^5"
   }
 }

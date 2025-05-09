@@ -23,6 +23,10 @@ export async function GET() {
       )
     }
 
+    // 1. filter out all invalid requests from TC
+    // 2. query db for all invalid requests
+    // 3. merge & sort by createdAt datetime
+
     return NextResponse.json({
       requests: responseData.transactionRequests || [],
       total: responseData.total || 0

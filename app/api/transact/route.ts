@@ -113,7 +113,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(responseData)
   } catch (error) {
-    console.error("Transaction error:", error)
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

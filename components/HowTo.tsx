@@ -291,17 +291,11 @@ const hash = await walletClient.writeContract({
         setFeedback(
           `✨ Great choice! The ${currentPhase} favors this type of transaction. Your transaction is being processed with priority.`
         );
-      } else {
-        setFeedback(
-          `⚠️ The ${currentPhase} sequencer does not like this transaction and will not process it. Try another!`
-        );
       }
-
     } catch (err) {
       setFeedback(
-        `❌ Transaction failed: ${err instanceof Error ? err.message : "Unknown error"}`
+        `⚠️ The ${currentPhase} sequencer does not like this transaction and will not process it. Try another!`
       );
-      // Set selectedTransaction to null so failed transactions can be retried immediately
       setSelectedTransaction(null);
     }
   }, [transactionInfo, sendTransaction, currentPhase, refreshTransactions]);

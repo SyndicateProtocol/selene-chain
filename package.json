@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "db:dev": "./db/dev.sh",
-    "db:gen-migration": "drizzle-kit generate --config=./db/drizzle.config.ts",
-    "db:migrate": "drizzle-kit migrate --config=./db/drizzle.config.ts",
+    "db:gen-migration": "drizzle-kit generate --config=./drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config=./drizzle.config.ts",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down -v --remove-orphans",
     "db:status": "docker ps -f name=lunar-db"

@@ -26,9 +26,6 @@ export async function POST(request: Request) {
       ? "https://api.syndicate.io/transact/sendTransactionWithValue"
       : "https://api.syndicate.io/transact/sendTransaction"
 
-    // 1. call currentPhase()
-    // 2. in code, check if the current transaction is okay or not
-
     const currentPhase = await exoClient.readContract({
       address: MOONPHASE_PERMISSION_MODULE_ADDRESS,
       abi: MoonphasePermissionModuleAbi,
@@ -42,7 +39,6 @@ export async function POST(request: Request) {
           isInvalid = true
         }
         break
-      // TODO: add cases here
       case "Waxing Crescent":
         if (
           payload.contractAddress ===
@@ -67,6 +63,7 @@ export async function POST(request: Request) {
 
     let responseData: any
     if (isInvalid) {
+      // TODO: update shape of payload to be that of invalidTransactionRequest schema
       responseData = await db.saveInvalidTransactionRequest(payload)
       responseData.invalid = true
       responseData.transactionAttempts = []

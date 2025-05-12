@@ -8,7 +8,7 @@ export interface LunarPhaseInterface {
 
 export const lunarPhases: LunarPhaseInterface[] = [
   {
-    name: "New",
+    name: "New Moon",
     symbol: "A",
     priority: "Prioritizes low calldata size"
   },
@@ -29,7 +29,7 @@ export const lunarPhases: LunarPhaseInterface[] = [
       "Can only send transactions with waxingGibbous() function signature"
   },
   {
-    name: "Full",
+    name: "Full Moon",
     symbol: "N",
     priority: "Can only interact with token contracts"
   },

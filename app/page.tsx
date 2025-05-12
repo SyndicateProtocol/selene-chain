@@ -68,7 +68,9 @@ export default function Home() {
             <TxPoller />
           </div>
         </div>
-        <Logo />
+        <a href="https://syndicate.io/" target="_blank" rel="noreferrer">
+          <Logo />
+        </a>
       </div>
       <ModelViewer />
     </section>

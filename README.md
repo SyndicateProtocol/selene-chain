@@ -29,16 +29,20 @@ These rules are enforced onchain by the [`MoonphasePermissionModule`](./contract
 
 [selene.demo.syndicate.io](https://selene.demo.syndicate.io/)
 
-## 📦 Repo Structure
+## 🧠 Tech Stack
 
-* `contracts/` — Core smart contracts
-* `frontend/` — UI showing live transaction logs and lunar state
-* `scripts/` — Deployment scripts and utilities
+* **Next.js** + **TypeScript** – frontend + API
+* **Solidity** – lunar permission logic
+* **Foundry** – contract dev/test
+* **Syndicate Sequencer** – decentralized sequencing
+* **PostgreSQL** – tx log storage
+* **Tailwind CSS** – styling
 
-## ✨ Tech Stack
 
-* Solidity (`^0.8.15`)
-* Syndicate's permission-based sequencer framework
-* RLP decoding for transaction inspection
-* Web3 + React (frontend)
-* Moon phase algorithm based on synodic month calculation
+## 📁 Repo Structure
+
+
+* `contracts/` — Solidity smart contracts
+* `app/` — Next.js app (routes, layout, styles)
+* `components/` - UI components
+* `db/` - Drizzle ORM

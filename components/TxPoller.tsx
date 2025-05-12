@@ -1,6 +1,6 @@
 "use client"
 
-import { useTransactions } from "@/lib/hooks"
+import { useInfiniteTransactions } from "@/lib/hooks"
 import { getBlockExplorerUrl, getTransactionHash } from "@/lib/utils"
 import { formatDistanceToNow } from "date-fns"
 import { ArrowUpRight, Clock, Code, Hash } from "lucide-react"
@@ -22,7 +22,17 @@ function TxLoadingSkeleton() {
 }
 
 export default function TxPoller() {
-  const { data: transactions, isLoading, isError, error } = useTransactions()
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    error
+  } = useInfiniteTransactions()
+
+  const transactions = data?.pages.flatMap((page) => page.requests) ?? []
 
   return (
     <section className="w-full basis-full">
@@ -114,6 +124,16 @@ export default function TxPoller() {
           </div>
           <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-white/80 via-white/60 to-transparent" />
         </div>
+      )}
+      {hasNextPage && (
+        <button
+          type="button"
+          onClick={() => fetchNextPage()}
+          disabled={isFetchingNextPage}
+          className="mt-4 px-4 py-2 bg-gray-800 text-white rounded-lg"
+        >
+          {isFetchingNextPage ? "Loading more..." : "Load More"}
+        </button>
       )}
     </section>
   )

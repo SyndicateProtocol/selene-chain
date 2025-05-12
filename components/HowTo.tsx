@@ -146,7 +146,7 @@ const hash = await walletClient.writeContract({
           functionSignature: "mint(address,uint256)",
           args: { "0": "0x49436F4956E80D9e27826ec6e43f06b9a4E54C69", "1": "1" }
         },
-        label: "Token transfer"
+        label: "Token mint"
       },
       highGas: {
         description: "Gas-heavy transactions with gas limit ≥ 2,000,000 units.",

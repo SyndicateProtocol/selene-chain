@@ -14,14 +14,14 @@ Each lunar phase imposes unique constraints on what kinds of transactions are al
 
 | Phase               | Rule Description                                        |
 | ------------------- | ------------------------------------------------------- |
-| **New Moon**        | Prefers low calldata size                               |
-| **Waxing Crescent** | Only broadcasts to an allowed contract                  |
-| **First Quarter**   | Requires angel number donation (e.g., 111, 333, etc.)   |
-| **Waxing Gibbous**  | Only allows function calls to `waxingGibbous()`         |
-| **Full Moon**       | Only allows token interactions (ERC20, ERC721, ERC1155) |
-| **Waning Gibbous**  | Requires high gas limit (≥ 2M)                          |
-| **Last Quarter**    | Gas limit to calldata size ratio must be ≥ 16           |
-| **Waning Crescent** | Only allows low-value transactions (≤ 0.01 ETH)         |
+| **🌑 New Moon**        | Prefers low calldata size                               |
+| **🌒 Waxing Crescent** | Only broadcasts to an allowed contract                  |
+| **🌓 First Quarter**   | Requires angel number donation (e.g., 111, 333, etc.)   |
+| **🌔 Waxing Gibbous**  | Only allows function calls to `waxingGibbous()`         |
+| **🌕 Full Moon**       | Only allows token interactions (ERC20, ERC721, ERC1155) |
+| **🌖 Waning Gibbous**  | Requires high gas limit (≥ 2M)                          |
+| **🌗 Last Quarter**    | Gas limit to calldata size ratio must be ≥ 16           |
+| **🌘 Waning Crescent** | Only allows low-value transactions (≤ 0.01 ETH)         |
 
 These rules are enforced onchain by the [`MoonphasePermissionModule`](./contracts/MoonphasePermissionModule.sol), which reads the moon phase using a timestamp-based algorithm and permits or rejects transactions accordingly.
 

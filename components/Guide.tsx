@@ -10,7 +10,7 @@ export default function Guide() {
   const sortedPhases = reorderLunarPhases(lunarPhases, moonPhase)
 
   return (
-    <div className="grid gap-2 max-w-96 min-w-72 font-geist">
+    <div className="grid gap-2 font-geist">
       {sortedPhases.map((phase) => (
         <div
           key={phase.name}

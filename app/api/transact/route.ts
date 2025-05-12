@@ -33,11 +33,6 @@ export async function POST(request: Request) {
       functionName: "currentPhase"
     })
 
-    console.log(
-      { currentPhase },
-      "testing testing testing here is curent phase:!"
-    )
-
     let isInvalid = false
     switch (currentPhase) {
       case "New Moon":

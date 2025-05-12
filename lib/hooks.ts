@@ -137,7 +137,7 @@ export function useInfiniteTransactions() {
   return useInfiniteQuery({
     queryKey: ["transactions"],
     queryFn: fetchTransactions,
-    initialPageParam: 1,
+    initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextPage
   })
 }

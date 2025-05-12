@@ -4,9 +4,13 @@ import { NextResponse } from "next/server"
 
 const API_KEY = process.env.DASHBOARD_API_KEY
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const endpoint = `https://api.syndicate.io/wallet/project/${DASHBOARD_PROJECT_ID}/requests`
+    const { searchParams } = new URL(req.url)
+    const page = Number.parseInt(searchParams.get("page") || "1", 10)
+    const pageSize = Number.parseInt(searchParams.get("pageSize") || "10", 10)
+
+    const endpoint = `https://api.syndicate.io/wallet/project/${DASHBOARD_PROJECT_ID}/requests?page=${page}&pageSize=${pageSize}`
 
     const response = await fetch(endpoint, {
       method: "GET",
@@ -25,11 +29,8 @@ export async function GET() {
     }
 
     const validRequests = responseData.transactionRequests.filter(
-      (request: any) => {
-        return request.invalid === false
-      }
+      (request: any) => !request.invalid
     )
-
     const invalidRequests = await db.getInvalidTransactionRequests()
 
     const mergedRequests = [
@@ -41,13 +42,15 @@ export async function GET() {
       }))
     ]
 
-    const sortedRequests = mergedRequests.sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    })
+    const sortedRequests = mergedRequests.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
 
     return NextResponse.json({
       requests: sortedRequests,
-      total: sortedRequests.length
+      total: responseData.total ?? sortedRequests.length,
+      nextPage: sortedRequests.length < pageSize ? null : page + 1
     })
   } catch (error) {
     return NextResponse.json(

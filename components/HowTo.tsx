@@ -371,7 +371,7 @@ const hash = await walletClient.writeContract({
   return (
     <div className="p-1 bg-white/40 border border-gray-light backdrop-blur-sm rounded-xl self-baseline max-w-full">
       <div className="p-4">
-        <div className="font-medium text-2xl mb-4">
+        <div className="font-medium text-4xl mb-4">
           Lunar Transaction Challenge
         </div>
         <div className="max-w-prose mb-4">

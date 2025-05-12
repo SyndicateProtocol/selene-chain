@@ -1,7 +1,7 @@
 "use client"
 
 import { type MoonPhase, MoonPhaseContext } from "@/components/Providers"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query"
 import { useContext } from "react"
 import { useState } from "react"
 import {
@@ -114,21 +114,31 @@ export type Transaction = {
     status?: string
   }>
 }
-const fetchTransactions = async (): Promise<Transaction[]> => {
-  const response = await fetch("/api/requests-by-project")
-  const data = await response.json()
 
-  if (!response.ok || data.error) {
-    throw new Error(data.error || `HTTP error: ${response.status}`)
+const PAGE_SIZE = 10
+
+const fetchTransactions = async ({
+  pageParam = 1
+}): Promise<{
+  requests: Transaction[]
+  nextPage: number | null
+}> => {
+  const res = await fetch(
+    `/api/requests-by-project?page=${pageParam}&pageSize=${PAGE_SIZE}`
+  )
+  const data = await res.json()
+  if (!res.ok) {
+    throw new Error(data.error || `HTTP error: ${res.status}`)
   }
-
-  return data.requests || []
+  return data
 }
 
-export function useTransactions() {
-  return useQuery({
+export function useInfiniteTransactions() {
+  return useInfiniteQuery({
     queryKey: ["transactions"],
-    queryFn: fetchTransactions
+    queryFn: fetchTransactions,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextPage
   })
 }
 

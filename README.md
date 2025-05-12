@@ -23,7 +23,7 @@ Each lunar phase imposes unique constraints on what kinds of transactions are al
 | **🌗 Last Quarter**    | Gas limit to calldata size ratio must be ≥ 16           |
 | **🌘 Waning Crescent** | Only allows low-value transactions (≤ 0.01 ETH)         |
 
-These rules are enforced onchain by the [`MoonphasePermissionModule`](./contracts/MoonphasePermissionModule.sol), which reads the moon phase using a timestamp-based algorithm and permits or rejects transactions accordingly.
+These rules are enforced onchain by the [`MoonphasePermissionModule`](./contracts/src/MoonphasePermissionModule.sol), which reads the moon phase using a timestamp-based algorithm and permits or rejects transactions accordingly.
 
 ## 🔭 Try It Live
 

@@ -58,7 +58,7 @@ export default function TxPoller() {
 
       {!isLoading && !isError && transactions && (
         <div className="relative">
-          <div className="max-h-[1000px] lg:max-h-[1100px] pb-8 mb-8 overflow-y-auto pr-1 space-y-2">
+          <div className="max-h-[1000px] lg:max-h-[1100px] mb-24  overflow-y-auto pr-1 space-y-2">
             {transactions.length === 0 ? (
               <div className="bg-white/40 backdrop-blur-sm rounded-xl p-6 text-center">
                 <p className="text-black/70">No transactions found</p>
@@ -121,19 +121,19 @@ export default function TxPoller() {
                 )
               })
             )}
+            {hasNextPage && (
+              <button
+                type="button"
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                className="my-8 px-2 py-1 bg-gray-800 text-white rounded-lg"
+              >
+                {isFetchingNextPage ? "Loading more..." : "Load More"}
+              </button>
+            )}
           </div>
           <div className="pointer-events-none absolute bottom-0 left-0 w-full h-10 bg-gradient-to-t from-white/80 via-white/60 to-transparent" />
         </div>
-      )}
-      {hasNextPage && (
-        <button
-          type="button"
-          onClick={() => fetchNextPage()}
-          disabled={isFetchingNextPage}
-          className="mt-4 px-4 py-2 bg-gray-800 text-white rounded-lg"
-        >
-          {isFetchingNextPage ? "Loading more..." : "Load More"}
-        </button>
       )}
     </section>
   )

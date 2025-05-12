@@ -6,7 +6,7 @@ import {
   SYNDICATE_EXO
 } from "@/lib/constants"
 import { NextResponse } from "next/server"
-import { createPublicClient, http } from "viem"
+import { http, createPublicClient } from "viem"
 
 const API_KEY = process.env.DASHBOARD_API_KEY
 

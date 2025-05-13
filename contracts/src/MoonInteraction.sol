@@ -17,10 +17,12 @@ contract MoonInteraction is Ownable {
     event LastQuarter(string, address indexed);
     event WaningCrescent(address indexed, uint256 indexed);
     event Withdraw(address indexed, uint256 indexed);
+
+    string[] public waningGibbousMessages;
+
     /// @notice Constructor
     /// @param _angel721Address The address of the Angel721 contract
     /// @param _owner The owner of the contract
-
     constructor(address _angel721Address, address _owner) Ownable(_owner) {
         angel = Angel721(_angel721Address);
     }
@@ -56,16 +58,11 @@ contract MoonInteraction is Ownable {
 
     /// @notice Emits the WaningGibbous event
     function waningGibbous() public {
-        emit WaningGibbous("U+1F316"); // 🌖
-
         // Consume gas by doing expensive operations
-        uint256 n = 250; // Carefully chosen to use ~2M gas
+        uint256 n = 100; // Carefully chosen to use ~2M gas
         for (uint256 i = 0; i < n; i++) {
-            // Storage writes are expensive (~20k gas each)
-            bytes32 slot = keccak256(abi.encodePacked(i));
-            assembly {
-                sstore(slot, 1)
-            }
+            waningGibbousMessages.push("U+1F316");
+            emit WaningGibbous("U+1F316"); // 🌖
         }
     }
 

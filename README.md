@@ -19,7 +19,7 @@ Each lunar phase imposes unique constraints on what kinds of transactions are al
 | **🌓 First Quarter**   | Requires angel number donation (e.g., 111, 333, etc.)   |
 | **🌔 Waxing Gibbous**  | Only allows function calls to `waxingGibbous()`         |
 | **🌕 Full Moon**       | Only allows token interactions (ERC20, ERC721, ERC1155) |
-| **🌖 Waning Gibbous**  | Requires high gas limit (≥ 2M)                          |
+| **🌖 Waning Gibbous**  | Requires high gas limit (≥ 21k)                          |
 | **🌗 Last Quarter**    | Gas limit to calldata size ratio must be ≥ 16           |
 | **🌘 Waning Crescent** | Only allows low-value transactions (≤ 0.01 ETH)         |
 

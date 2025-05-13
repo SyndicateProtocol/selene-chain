@@ -36,7 +36,7 @@ export const lunarPhases: LunarPhaseInterface[] = [
   {
     name: "Waning Gibbous",
     symbol: "R",
-    priority: "Gas limit must be >2M gas"
+    priority: "Gas limit must be >21k gas"
   },
   {
     name: "Last Quarter",

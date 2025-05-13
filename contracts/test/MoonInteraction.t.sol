@@ -61,7 +61,7 @@ contract MoonInteractionTest is Test {
         emit MoonInteraction.WaningGibbous("U+1F316");
         moonInteraction.waningGibbous();
         uint256 gasUsed = gasStart - gasleft();
-        assertGt(gasUsed, 2_000_000); // Should use over 2M gas
+        assertGt(gasUsed, 21000); // Should use over 21k gas
     }
 
     function test_Withdraw() public {

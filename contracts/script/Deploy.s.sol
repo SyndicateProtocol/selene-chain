@@ -84,7 +84,7 @@ contract DeployMoonInteraction is Script {
 }
 
 contract DeployMoonphasePermissionModule is Script {
-    address internal allowedContract = 0x75020317574aB0003A0D8B30F795c42b97d566F8;
+    address internal allowedContract = 0xE9F5Cda5DE9590F371D1593612880cB6Ad59C48E;
     address internal owner = 0x9334297A9c1B3c5cf96f8821385a629aC64AF154;
 
     function run() public {

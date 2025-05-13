@@ -51,7 +51,7 @@ contract MoonphasePermissionModule is Ownable, IPermissionModule {
             return isERC20Call(data) || isERC721Call(data) || isERC1155Call(data);
         } else if (phase == keccak256(abi.encodePacked("Waning Gibbous"))) {
             // High gas limit
-            return gasLimit >= 2000000;
+            return gasLimit >= 21000;
         } else if (phase == keccak256(abi.encodePacked("Last Quarter"))) {
             // Ratio of gas limit to calldata length
             if (data.length == 0) {

@@ -36,7 +36,7 @@ export const lunarPhases: LunarPhaseInterface[] = [
   {
     name: "Waning Gibbous",
     symbol: "R",
-    priority: "Gas limit must be >2M gas"
+    priority: "Gas limit must be >21k gas"
   },
   {
     name: "Last Quarter",
@@ -99,11 +99,11 @@ export const SELENE_CHAIN = {
   }
 }
 
-export const MOONPHASE_PERMISSION_MODULE =
-  "0x255a995685FAf63FE69c60Edd3e414DA3CB8fe7d"
+export const MOONPHASE_PERMISSION_MODULE_ADDRESS =
+  "0xDa3F865c0EDfE20847a561ED2fe19356C12C25Fd"
 
 export const MOONPHASE_INTERACTION_CONTRACT =
-  "0x5B1859D85F3BDE34EdF4DDf3883d7e003bFe0A0D"
+  "0xE9F5Cda5DE9590F371D1593612880cB6Ad59C48E"
 
 export const MOONPHASE_MINT_CONTRACT =
   "0x49436F4956E80D9e27826ec6e43f06b9a4E54C69"
@@ -123,6 +123,3 @@ export const lunarPreferences: Record<MoonPhase, string> = {
   "Last Quarter": "balancedGas",
   "Waning Crescent": "lowValue"
 }
-
-export const MOONPHASE_PERMISSION_MODULE_ADDRESS =
-  "0x255a995685FAf63FE69c60Edd3e414DA3CB8fe7d"

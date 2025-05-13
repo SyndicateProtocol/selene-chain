@@ -328,7 +328,7 @@ const MoonInteractionAbi = [
 
 export async function dev() {
   const account = privateKeyToAccount(generatePrivateKey())
-  const to = "0x5B1859D85F3BDE34EdF4DDf3883d7e003bFe0A0D"
+  const to = "0xE9F5Cda5DE9590F371D1593612880cB6Ad59C48E"
 
   const gas = await seleneClient.estimateGas({
     to,

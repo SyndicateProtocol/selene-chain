@@ -59,7 +59,7 @@ contract MoonInteraction is Ownable {
         emit WaningGibbous("U+1F316"); // 🌖
 
         // Consume gas by doing expensive operations
-        uint256 n = 100; // Carefully chosen to use ~2M gas
+        uint256 n = 250; // Carefully chosen to use ~2M gas
         for (uint256 i = 0; i < n; i++) {
             // Storage writes are expensive (~20k gas each)
             bytes32 slot = keccak256(abi.encodePacked(i));

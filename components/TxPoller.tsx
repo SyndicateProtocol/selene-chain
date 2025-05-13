@@ -65,7 +65,7 @@ export default function TxPoller() {
               </div>
             ) : (
               transactions.map((tx, index) => {
-                const isFailed = getTransactionHash(tx) === null || tx.invalid
+                const isFailed = tx.invalid
                 return (
                   <div
                     key={getTransactionHash(tx) || index}

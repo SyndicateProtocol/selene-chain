@@ -1,10 +1,9 @@
+import { Providers } from "@/components/Providers"
+import { getMoonPhaseData } from "@/lib/utils"
 import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from "next"
 import { Geist, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
-import { Providers } from "@/components/Providers"
-import { getMoonPhaseData } from "@/lib/utils"
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,20 +25,20 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-
-  const moonPhaseData = await getMoonPhaseData();
-
+  const moonPhaseData = await getMoonPhaseData()
 
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${jetBrainsMono.variable} antialiased`}
       >
-        <Providers value={moonPhaseData}>
-          {children}
-        </Providers>
+        <Providers value={moonPhaseData}>{children}</Providers>
         <Analytics />
       </body>
     </html>
   )
 }
+
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+export const fetchCache = "force-no-store"

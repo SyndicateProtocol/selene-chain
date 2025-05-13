@@ -138,7 +138,8 @@ export function useInfiniteTransactions() {
     queryKey: ["transactions"],
     queryFn: fetchTransactions,
     initialPageParam: 0,
-    getNextPageParam: (lastPage) => lastPage.nextPage
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    refetchInterval: 5000 // 5 seconds
   })
 }
 

@@ -3,11 +3,19 @@ import { getMoonPhaseData } from "@/lib/utils"
 import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from "next"
 import { Geist, JetBrains_Mono } from "next/font/google"
+import localFont from "next/font/local"
 import "./globals.css"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"]
+})
+
+const moonPhases = localFont({
+  src: "../public/fonts/MoonPhases-Regular.woff2",
+  display: "block",
+  preload: true,
+  variable: "--font-moonphases"
 })
 
 const jetBrainsMono = JetBrains_Mono({
@@ -30,7 +38,8 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${jetBrainsMono.variable} antialiased`}
+        className={`${geistSans.variable} ${jetBrainsMono.variable} ${moonPhases.variable}
+        antialiased`}
       >
         <Providers value={moonPhaseData}>{children}</Providers>
         <Analytics />

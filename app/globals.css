@@ -4,17 +4,9 @@ html {
   scroll-behavior: smooth;
 }
 
-@font-face {
-  font-family: "MoonPhases";
-  src: url("/fonts/MoonPhases-Regular.woff2") format("woff2");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 @theme {
   --font-geist: "Geist", sans-serif;
-  --font-moonphases: "MoonPhases", sans-serif;
+  --font-moonphases: var(--font-moonphases);
   --font-mono: "JetBrains Mono", monospace;
   --color-blue: #0005ff;
   --color-gray: #4b4b4b;

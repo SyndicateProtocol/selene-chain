@@ -11,7 +11,7 @@ const geistSans = Geist({
   subsets: ["latin"]
 })
 
-export const moonPhases = localFont({
+const moonPhases = localFont({
   src: "../public/fonts/MoonPhases-Regular.woff2",
   display: "block",
   preload: true,

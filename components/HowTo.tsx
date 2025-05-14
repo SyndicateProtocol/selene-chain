@@ -149,14 +149,14 @@ const hash = await walletClient.writeContract({
         label: "Token mint"
       },
       highGas: {
-        description: "Gas-heavy transactions with gas limit ≥ 2,000,000 units.",
+        description: "Transactions with gas limit ≥ 21,000 units.",
         code: `
 const hash = await walletClient.writeContract({
   address: moonPhaseContract.address,
   abi: moonPhaseAbi,
   functionName: 'waningGibbous',
   args: [],
-  gas: BigInt(2500000)  // High gas limit ≥ 2,000,000
+  gas: BigInt(100000)  // Gas limit ≥ 21,000
 });
       `,
         config: {
